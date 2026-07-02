@@ -44,7 +44,17 @@ Navigator MSVC Academy is a structured, low‑level engineering curriculum desig
 - DirectX 11  
 - AVIS subsystem routing  
 
-The academy provides an offline‑first, self‑contained learning environment suitable for systems programmers, engine developers, and graphics engineers.
+
+<p align="center">
+ <a target="_self" title="CLICK HERE to ENTER THE Mercwar AI portal!" href="https://mercwar01.byethost3.com"> 
+   <img src="mwacd-bg.png" alt="Mercwar AI" width="100%" style="border-radius: 4px; border: 1px solid #111;">
+ </a>
+</p>
+The academy provides a self‑contained learning environment: 
+
+- Suitable for systems programmers.
+- Engine developers.
+- Ggraphics engineers.
 
 ## 2. Objectives  
 - Windows kernel interactions  
