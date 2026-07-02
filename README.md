@@ -27,8 +27,10 @@ This version follows:
 
 ---
 
-<p align="center">
+<p align="center"> 
+    <a target="_self" title="CLICK HERE to ENTER THE GATEWAY FREE!" href="https://mercwar.github.io/Navigator-MSVC-Academy/index.html"> 
   <img src="msvc.png" alt="Navigator MSVC Academy Banner" width="100%" style="border-radius: 4px; border: 1px solid #111;">
+     </a>
 </p>
 
 ---
