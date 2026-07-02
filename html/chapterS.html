@@ -1,0 +1,51 @@
+<!-- AVIS BLOCK
+FILE: chapterS.html
+PURPOSE: CYHY DX Telemetry Fusion — Frame Timing, GPU Load, Present Health
+AUTHOR: Demon
+-->
+
+<h2>Chapter S — CYHY DX Telemetry Fusion: Frame Timing, GPU Load, Present Health</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Frame Timing</td>
+<td>
+CYHY measures:
+<pre><code>
+t.frameTime = Timer_GetDelta();
+t.fps = 1.0f / t.frameTime;
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GPU Load</td>
+<td>
+<pre><code>
+t.gpuLoad = MERCG_GetGPULoad(dx);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Present Health</td>
+<td>
+<pre><code>
+HRESULT hr = dx->swap->Present(0,DXGI_PRESENT_TEST);
+t.presentOK = SUCCEEDED(hr);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Telemetry Vector</td>
+<td>
+<pre><code>
+avis.cyhy->telemetry = t;
+</code></pre>
+</td>
+</tr>
+
+</table>

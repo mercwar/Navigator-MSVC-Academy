@@ -1,0 +1,203 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter09.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 9 (Arrays)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 9 — Arrays in C</h2>
+
+<table>
+  <tr>
+    <th>Concept</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>What is an array?</td>
+    <td>
+      An array is a sequence of elements stored in contiguous memory.  
+      All elements share the same type and are accessed by index.
+      <br><br>
+      Example:
+      <pre><code>
+int nums[5];
+      </code></pre>
+      This creates space for 5 integers.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Array initialization</td>
+    <td>
+      <pre><code>
+int nums[5] = {1, 2, 3, 4, 5};
+      </code></pre>
+      You can also let the compiler count:
+      <pre><code>
+int nums[] = {10, 20, 30};
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Accessing elements</td>
+    <td>
+      <pre><code>
+printf("%d\\n", nums[0]);  // first element
+printf("%d\\n", nums[4]);  // fifth element
+      </code></pre>
+      Indexing starts at <strong>0</strong>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Modifying elements</td>
+    <td>
+      <pre><code>
+nums[2] = 99;
+      </code></pre>
+      Changes the third element.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Looping through arrays</td>
+    <td>
+      <pre><code>
+for (int i = 0; i &lt; 5; i++) {
+    printf("%d\\n", nums[i]);
+}
+      </code></pre>
+      Arrays and loops are often used together.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Out-of-bounds access</td>
+    <td>
+      <pre><code>
+nums[10] = 123;  // ERROR: undefined behavior
+      </code></pre>
+      C does not check bounds — accessing invalid indices can corrupt memory.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Character arrays (strings)</td>
+    <td>
+      <pre><code>
+char name[6] = "Demon";
+      </code></pre>
+      Includes a hidden <strong>\\0</strong> terminator.
+      <br><br>
+      Equivalent:
+      <pre><code>
+char name[] = {'D','e','m','o','n','\\0'};
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Multidimensional arrays</td>
+    <td>
+      <pre><code>
+int grid[3][3] = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+      </code></pre>
+      Access:
+      <pre><code>
+printf("%d\\n", grid[1][2]);  // prints 6
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Memory layout</td>
+    <td>
+      Arrays are stored in contiguous memory:
+      <pre><code>
+int nums[3] = {10, 20, 30};
+      </code></pre>
+      <ul>
+        <li><strong>nums[0]</strong> at address X</li>
+        <li><strong>nums[1]</strong> at X + sizeof(int)</li>
+        <li><strong>nums[2]</strong> at X + 2 * sizeof(int)</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Arrays and pointers</td>
+    <td>
+      Arrays decay to pointers:
+      <pre><code>
+int nums[3] = {1, 2, 3};
+int *p = nums;  // same as &nums[0]
+      </code></pre>
+      Access:
+      <pre><code>
+printf("%d\\n", *(p + 1));  // prints 2
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Passing arrays to functions</td>
+    <td>
+      <pre><code>
+void show(int arr[], int size) {
+    for (int i = 0; i &lt; size; i++)
+        printf("%d\\n", arr[i]);
+}
+      </code></pre>
+      Arrays are passed as pointers.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Returning arrays</td>
+    <td>
+      C cannot return arrays directly.  
+      Use pointers or structs instead.
+      <pre><code>
+int* makeArray(void) {
+    static int nums[3] = {1, 2, 3};
+    return nums;
+}
+      </code></pre>
+      <strong>static</strong> keeps the array alive after the function ends.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example: Full array program</td>
+    <td>
+      <pre><code>
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int nums[5] = {5, 10, 15, 20, 25};
+
+    for (int i = 0; i &lt; 5; i++) {
+        printf("nums[%d] = %d\\n", i, nums[i]);
+    }
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 10 introduces pointers — the most powerful and dangerous feature in C.
+    </td>
+  </tr>
+
+</table>

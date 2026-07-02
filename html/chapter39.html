@@ -1,0 +1,356 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter39.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 39 (Engine Architecture)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 39 — Engine Architecture: Subsystems, Messaging, Memory Pools & Game Loop</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>Engine Architecture Overview</td>
+    <td>
+      A game engine is composed of independent subsystems:
+      <ul>
+        <li>Rendering</li>
+        <li>Physics</li>
+        <li>AI</li>
+        <li>Audio</li>
+        <li>Input</li>
+        <li>Networking</li>
+        <li>Resource management</li>
+        <li>Scene graph</li>
+      </ul>
+
+      These systems communicate through messaging or shared state.
+    </td>
+  </tr>
+
+  <!-- SUBSYSTEMS -->
+  <tr>
+    <td>Subsystem Structure</td>
+    <td>
+      <pre><code>
+struct Subsystem {
+    virtual void Init() = 0;
+    virtual void Update(float dt) = 0;
+    virtual void Shutdown() = 0;
+};
+      </code></pre>
+
+      Example:
+      <pre><code>
+class PhysicsSystem : public Subsystem {
+public:
+    void Init() override;
+    void Update(float dt) override;
+    void Shutdown() override;
+};
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- ENGINE CORE -->
+  <tr>
+    <td>Engine Core</td>
+    <td>
+      <pre><code>
+class Engine {
+public:
+    Renderer renderer;
+    PhysicsSystem physics;
+    AudioSystem audio;
+    AISystem ai;
+    NetworkSystem net;
+
+    void Init() {
+        renderer.Init();
+        physics.Init();
+        audio.Init();
+        ai.Init();
+        net.Init();
+    }
+
+    void Update(float dt) {
+        net.Update(dt);
+        input.Update(dt);
+        ai.Update(dt);
+        physics.Update(dt);
+        renderer.Update(dt);
+        audio.Update(dt);
+    }
+
+    void Shutdown() {
+        audio.Shutdown();
+        renderer.Shutdown();
+        physics.Shutdown();
+        ai.Shutdown();
+        net.Shutdown();
+    }
+};
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MESSAGE BUS -->
+  <tr>
+    <td>Messaging System</td>
+    <td>
+      Subsystems communicate via message bus:
+
+      <pre><code>
+struct Message {
+    int type;
+    void *data;
+};
+
+class MessageBus {
+public:
+    vector<Message> queue;
+
+    void Send(Message m) {
+        queue.push_back(m);
+    }
+
+    void Dispatch() {
+        for (auto &m : queue)
+            Deliver(m);
+        queue.clear();
+    }
+};
+      </code></pre>
+
+      Example message:
+      <pre><code>
+Message m;
+m.type = MSG_COLLISION;
+m.data = &collisionInfo;
+bus.Send(m);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MEMORY POOLS -->
+  <tr>
+    <td>Memory Pools</td>
+    <td>
+      Memory pools reduce fragmentation and speed allocation.
+
+      <pre><code>
+struct Pool {
+    char *mem;
+    size_t size;
+    size_t offset;
+};
+
+void *PoolAlloc(Pool &p, size_t s) {
+    void *ptr = p.mem + p.offset;
+    p.offset += s;
+    return ptr;
+}
+      </code></pre>
+
+      Reset each frame:
+      <pre><code>
+pool.offset = 0;
+      </code></pre>
+
+      Perfect for:
+      <ul>
+        <li>Particles</li>
+        <li>Temporary buffers</li>
+        <li>Frame‑based allocations</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- JOB SYSTEM -->
+  <tr>
+    <td>Job System (Multithreading)</td>
+    <td>
+      Job systems distribute work across CPU cores.
+
+      Job:
+      <pre><code>
+struct Job {
+    void (*func)(void*);
+    void *data;
+};
+      </code></pre>
+
+      Worker thread:
+      <pre><code>
+void Worker() {
+    while (running) {
+        Job j = queue.Pop();
+        j.func(j.data);
+    }
+}
+      </code></pre>
+
+      Submit job:
+      <pre><code>
+Job j;
+j.func = UpdatePhysicsChunk;
+j.data = chunkPtr;
+queue.Push(j);
+      </code></pre>
+
+      Used for:
+      <ul>
+        <li>Physics</li>
+        <li>AI</li>
+        <li>Animation</li>
+        <li>Occlusion culling</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- SCENE GRAPH -->
+  <tr>
+    <td>Scene Graph</td>
+    <td>
+      Scene graph organizes objects hierarchically.
+
+      <pre><code>
+struct Node {
+    XMFLOAT3 pos;
+    XMFLOAT3 rot;
+    XMFLOAT3 scale;
+    vector<Node*> children;
+};
+      </code></pre>
+
+      Update:
+      <pre><code>
+void UpdateNode(Node *n, XMMATRIX parent) {
+    XMMATRIX local = CalcMatrix(n);
+    XMMATRIX world = XMMatrixMultiply(local, parent);
+
+    for (auto *c : n->children)
+        UpdateNode(c, world);
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- RESOURCE MANAGER -->
+  <tr>
+    <td>Resource Manager</td>
+    <td>
+      Resources:
+      <ul>
+        <li>Textures</li>
+        <li>Meshes</li>
+        <li>Shaders</li>
+        <li>Audio</li>
+      </ul>
+
+      <pre><code>
+unordered_map<string, Resource*> cache;
+
+Resource *Load(string path) {
+    if (cache.count(path))
+        return cache[path];
+
+    Resource *r = LoadFromDisk(path);
+    cache[path] = r;
+    return r;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- GAME LOOP -->
+  <tr>
+    <td>Game Loop</td>
+    <td>
+      <pre><code>
+while (running) {
+    float dt = timer.GetDelta();
+
+    input.Update(dt);
+    engine.Update(dt);
+    engine.renderer.Render();
+}
+      </code></pre>
+
+      Deterministic physics:
+      <pre><code>
+accumulator += dt;
+
+while (accumulator >= fixedStep) {
+    physics.Update(fixedStep);
+    accumulator -= fixedStep;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- EVENT SYSTEM -->
+  <tr>
+    <td>Event System</td>
+    <td>
+      <pre><code>
+struct Event {
+    int type;
+    void *payload;
+};
+
+vector<Event> events;
+
+void Emit(Event e) {
+    events.push_back(e);
+}
+
+void ProcessEvents() {
+    for (auto &e : events)
+        HandleEvent(e);
+    events.clear();
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL ENGINE -->
+  <tr>
+    <td>Full Engine Architecture Summary</td>
+    <td>
+      <pre><code>
+// Engine startup
+InitSubsystems();
+
+// Main loop
+while (running) {
+    PollInput();
+    DispatchMessages();
+    RunJobs();
+    UpdateSceneGraph();
+    PhysicsStep();
+    AIStep();
+    NetworkStep();
+    RenderFrame();
+}
+
+// Shutdown
+ShutdownSubsystems();
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 40 introduces **asset pipelines — importing, converting, compressing, and optimizing textures, meshes, and animations**.
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,65 @@
+<!-- AVIS BLOCK
+FILE: chapterT.html
+PURPOSE: MERC‑G Full DirectX Pipeline Fusion — D2D + DWrite + D3D11
+AUTHOR: Demon
+-->
+
+<h2>Chapter T — MERC‑G Full DirectX Pipeline Fusion: D2D + DWrite + D3D11</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Pipeline Fusion Concept</td>
+<td>
+MERC‑G fuses all DX pipelines:
+<ul>
+<li>D2D — vector graphics</li>
+<li>DWrite — text</li>
+<li>D3D11 — GPU rendering</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>D2D Fusion</td>
+<td>
+<pre><code>
+rt->BeginDraw();
+rt->DrawLine(...);
+rt->DrawText(...);
+rt->EndDraw();
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>D3D Fusion</td>
+<td>
+<pre><code>
+dx->ctx->OMSetRenderTargets(1,&dx->rtv,dx->dsv);
+dx->ctx->DrawIndexed(indexCount,0,0);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Unified Present</td>
+<td>
+<pre><code>
+dx->swap->Present(1,0);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>AVIS Final Gate</td>
+<td>
+<pre><code>
+if (!avis.cyhy->dxHealth.deviceLost)
+    MERCG_RenderFrame(dx);
+</code></pre>
+</td>
+</tr>
+
+</table>

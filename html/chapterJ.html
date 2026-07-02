@@ -1,0 +1,68 @@
+<!-- AVIS BLOCK
+FILE: chapterJ.html
+PURPOSE: MERC‑G Render Core → DirectX Pipeline Vector
+AUTHOR: Demon
+-->
+
+<h2>Chapter J — MERC‑G Render Core → DirectX Pipeline Vector</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>MERC‑G Pipeline Ownership</td>
+<td>
+MERC‑G owns:
+<ul>
+<li>D2D render target</li>
+<li>DWrite text formats</li>
+<li>D3D11 shaders</li>
+<li>Vertex buffers</li>
+<li>Texture loaders</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>DXVector Consumption</td>
+<td>
+<pre><code>
+void MERCG_Init(DXVector *dx)
+{
+    MERCG_InitD2D(dx);
+    MERCG_InitDWrite(dx);
+    MERCG_InitD3D(dx);
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Draw Dispatch</td>
+<td>
+<pre><code>
+void MERCG_Dispatch(DXVector *dx,const CY_CMD &cmd)
+{
+    switch(cmd.type){
+        case CMD_DRAW:   MERCG_Draw(dx,cmd.payload); break;
+        case CMD_TEXT:   MERCG_Text(dx,cmd.payload); break;
+        case CMD_CLEAR:  MERCG_Clear(dx); break;
+        case CMD_PRESENT:dx->swap->Present(1,0); break;
+    }
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Final Vector Out</td>
+<td>
+The final DirectX call path:
+<pre><code>
+LLM → CYBORG → MERC‑G → DXVector → DirectX
+</code></pre>
+This is the MercWar AVIS subsystem vector architecture.
+</td>
+</tr>
+
+</table>

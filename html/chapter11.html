@@ -1,0 +1,255 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter11.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 11 (Advanced C Concepts)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 11 — Advanced C Concepts & Preparation for WinAPI</h2>
+
+<table>
+  <tr>
+    <th>Concept</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>Structs</td>
+    <td>
+      Structs group related variables into a single composite type.
+      <pre><code>
+struct Player {
+    char name[32];
+    int score;
+    float health;
+};
+      </code></pre>
+      Usage:
+      <pre><code>
+struct Player p = {"Demon", 9001, 100.0f};
+printf("%s: %d\\n", p.name, p.score);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Typedef</td>
+    <td>
+      Creates aliases for types:
+      <pre><code>
+typedef unsigned long ulong;
+typedef struct Player Player;
+      </code></pre>
+      Makes code cleaner and easier to maintain.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Enums</td>
+    <td>
+      Enumerations define named integer constants:
+      <pre><code>
+enum State { IDLE, RUNNING, JUMPING };
+enum State s = RUNNING;
+      </code></pre>
+      Useful for readable state machines.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Bitwise operations</td>
+    <td>
+      <pre><code>
+int flags = 0;
+flags |= 1;   // set bit 0
+flags |= 2;   // set bit 1
+flags &= ~1;  // clear bit 0
+      </code></pre>
+      Critical for low-level programming, drivers, and WinAPI flags.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Memory layout</td>
+    <td>
+      Understanding how C stores data prepares you for WinAPI structures.
+      <pre><code>
+struct Vec2 {
+    float x;
+    float y;
+};
+      </code></pre>
+      Stored contiguously:
+      <ul>
+        <li>x at offset 0</li>
+        <li>y at offset 4</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Dynamic memory (malloc/free)</td>
+    <td>
+      <pre><code>
+int *arr = malloc(sizeof(int) * 10);
+if (!arr) return 1;
+
+arr[0] = 123;
+
+free(arr);
+      </code></pre>
+      WinAPI uses similar patterns with <code>HeapAlloc</code> and <code>LocalAlloc</code>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Realloc</td>
+    <td>
+      Resize dynamic memory:
+      <pre><code>
+int *arr = malloc(5 * sizeof(int));
+arr = realloc(arr, 10 * sizeof(int));
+      </code></pre>
+      Useful for buffers and dynamic arrays.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Function pointers</td>
+    <td>
+      <pre><code>
+int add(int a, int b) { return a + b; }
+
+int (*fp)(int, int) = add;
+printf("%d\\n", fp(3, 4));
+      </code></pre>
+      WinAPI uses callbacks extensively (WndProc, timers, hooks).
+    </td>
+  </tr>
+
+  <tr>
+    <td>Callback functions</td>
+    <td>
+      <pre><code>
+void process(int (*fn)(int)) {
+    printf("%d\\n", fn(5));
+}
+      </code></pre>
+      WinAPI message handlers follow similar patterns.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Preprocessor macros</td>
+    <td>
+      <pre><code>
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define DEBUG 1
+
+#if DEBUG
+printf("Debug mode\\n");
+#endif
+      </code></pre>
+      WinAPI uses macros heavily for flags, constants, and message IDs.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Multiple source files</td>
+    <td>
+      <pre><code>
+// math.h
+int add(int a, int b);
+
+// math.c
+int add(int a, int b) { return a + b; }
+
+// main.c
+#include "math.h"
+printf("%d\\n", add(2, 3));
+      </code></pre>
+      WinAPI projects always use multiple files.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Makefiles</td>
+    <td>
+      <pre><code>
+main: main.c math.c
+    gcc main.c math.c -o main
+      </code></pre>
+      Windows equivalents: <code>nmake</code>, <code>MSBuild</code>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Understanding headers</td>
+    <td>
+      WinAPI relies on massive header files:
+      <ul>
+        <li><code>windows.h</code></li>
+        <li><code>winuser.h</code></li>
+        <li><code>wingdi.h</code></li>
+        <li><code>commctrl.h</code></li>
+      </ul>
+      Knowing how C headers work is essential.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Preparing for WinAPI</td>
+    <td>
+      WinAPI requires mastery of:
+      <ul>
+        <li>pointers</li>
+        <li>structs</li>
+        <li>function pointers</li>
+        <li>memory management</li>
+        <li>bitwise flags</li>
+      </ul>
+      You now have all the C fundamentals needed to build Windows applications.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example: Combined advanced C program</td>
+    <td>
+      <pre><code>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef struct {
+    char name[32];
+    int score;
+} Player;
+
+void show(Player *p) {
+    printf("%s: %d\\n", p->name, p->score);
+}
+
+int main(void) {
+    Player *p = malloc(sizeof(Player));
+    if (!p) return 1;
+
+    p->score = 9001;
+    snprintf(p->name, 32, "Demon");
+
+    show(p);
+
+    free(p);
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 12 begins WinAPI — creating windows, handling messages, and interacting with the OS.
+    </td>
+  </tr>
+
+</table>

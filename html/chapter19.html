@@ -1,0 +1,297 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter19.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 19 (Threads, Timers, Async)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 19 — Multithreading, Timers & Async Operations in WinAPI</h2>
+
+<table>
+  <tr>
+    <th>Component</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- THREAD BASICS -->
+  <tr>
+    <td>What is a Thread?</td>
+    <td>
+      A thread is an independent path of execution inside a process.  
+      WinAPI threads allow:
+      <ul>
+        <li>Background tasks</li>
+        <li>Parallel computation</li>
+        <li>Non‑blocking UI</li>
+        <li>Timers and async operations</li>
+      </ul>
+      WinAPI threads are created with <strong>CreateThread</strong>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>CreateThread</td>
+    <td>
+      <pre><code>
+DWORD WINAPI WorkerThread(LPVOID lpParam)
+{
+    for (int i = 0; i < 5; i++) {
+        Sleep(1000);
+    }
+    return 0;
+}
+
+HANDLE hThread = CreateThread(
+    NULL,
+    0,
+    WorkerThread,
+    NULL,
+    0,
+    NULL
+);
+      </code></pre>
+      <strong>Sleep()</strong> pauses the thread without blocking the UI.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Closing Threads</td>
+    <td>
+      <pre><code>
+WaitForSingleObject(hThread, INFINITE);
+CloseHandle(hThread);
+      </code></pre>
+      Always close thread handles to avoid leaks.
+    </td>
+  </tr>
+
+  <!-- CRITICAL SECTIONS -->
+  <tr>
+    <td>Critical Sections</td>
+    <td>
+      Used to protect shared data:
+      <pre><code>
+CRITICAL_SECTION cs;
+
+InitializeCriticalSection(&cs);
+
+EnterCriticalSection(&cs);
+// modify shared data
+LeaveCriticalSection(&cs);
+
+DeleteCriticalSection(&cs);
+      </code></pre>
+      Prevents race conditions.
+    </td>
+  </tr>
+
+  <!-- TIMERS -->
+  <tr>
+    <td>Timers (SetTimer)</td>
+    <td>
+      WinAPI timers send <strong>WM_TIMER</strong> messages:
+      <pre><code>
+SetTimer(hwnd, 1, 1000, NULL);  // 1 second
+      </code></pre>
+
+      Handle in WndProc:
+      <pre><code>
+case WM_TIMER:
+    if (wParam == 1) {
+        // do something every second
+    }
+    return 0;
+      </code></pre>
+
+      Timers run on the message loop — they do NOT create threads.
+    </td>
+  </tr>
+
+  <tr>
+    <td>KillTimer</td>
+    <td>
+      <pre><code>
+KillTimer(hwnd, 1);
+      </code></pre>
+      Stops the timer.
+    </td>
+  </tr>
+
+  <!-- CALLBACK TIMERS -->
+  <tr>
+    <td>Callback Timers</td>
+    <td>
+      Timers can call a function directly:
+      <pre><code>
+void CALLBACK TimerProc(HWND hwnd, UINT msg,
+                        UINT id, DWORD time)
+{
+    // timer callback
+}
+
+SetTimer(hwnd, 2, 500, TimerProc);
+      </code></pre>
+      Callback timers do not require WM_TIMER.
+    </td>
+  </tr>
+
+  <!-- ASYNC FILE I/O -->
+  <tr>
+    <td>Async File I/O</td>
+    <td>
+      WinAPI supports asynchronous file operations using <strong>OVERLAPPED</strong>:
+      <pre><code>
+OVERLAPPED ov = {0};
+ov.Offset = 0;
+
+ReadFile(hFile, buffer, 1024, NULL, &ov);
+      </code></pre>
+
+      Completion is signaled with:
+      <ul>
+        <li><strong>GetOverlappedResult</strong></li>
+        <li><strong>WaitForSingleObject</strong></li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- POSTMESSAGE -->
+  <tr>
+    <td>PostMessage (Async UI Updates)</td>
+    <td>
+      <pre><code>
+PostMessage(hwnd, WM_USER + 1, 0, 0);
+      </code></pre>
+
+      Unlike <strong>SendMessage</strong>, PostMessage is asynchronous and returns immediately.
+    </td>
+  </tr>
+
+  <!-- SENDMESSAGE -->
+  <tr>
+    <td>SendMessage (Blocking)</td>
+    <td>
+      <pre><code>
+SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)"Hello");
+      </code></pre>
+
+      <strong>SendMessage</strong> blocks until the message is processed.
+    </td>
+  </tr>
+
+  <!-- THREAD + UI SAFE UPDATE -->
+  <tr>
+    <td>Safe UI Updates from Threads</td>
+    <td>
+      Threads cannot directly modify UI.  
+      Use <strong>PostMessage</strong>:
+      <pre><code>
+PostMessage(hwnd, WM_USER + 10, value, 0);
+      </code></pre>
+
+      Handle in WndProc:
+      <pre><code>
+case WM_USER + 10:
+    // update UI safely
+    return 0;
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL PROGRAM -->
+  <tr>
+    <td>Full Thread + Timer Example</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+
+DWORD WINAPI WorkerThread(LPVOID lpParam)
+{
+    for (int i = 0; i < 5; i++) {
+        Sleep(1000);
+        PostMessage((HWND)lpParam, WM_USER + 1, i, 0);
+    }
+    return 0;
+}
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
+                         WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+
+        case WM_CREATE:
+            CreateThread(NULL, 0, WorkerThread, hwnd, 0, NULL);
+            SetTimer(hwnd, 1, 500, NULL);
+            return 0;
+
+        case WM_TIMER:
+            if (wParam == 1) {
+                MessageBeep(MB_OK);
+            }
+            return 0;
+
+        case WM_USER + 1:
+            // thread update
+            // wParam contains counter value
+            return 0;
+
+        case WM_DESTROY:
+            KillTimer(hwnd, 1);
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance,
+                   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    WNDCLASSEX wc = {0};
+    wc.cbSize        = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc   = WndProc;
+    wc.hInstance     = hInstance;
+    wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+    wc.lpszClassName = "AsyncWindow";
+
+    RegisterClassEx(&wc);
+
+    HWND hwnd = CreateWindowEx(
+        0,
+        "AsyncWindow",
+        "WinAPI Threads & Timers",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        800, 600,
+        NULL, NULL,
+        hInstance,
+        NULL
+    );
+
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 20 introduces **sockets, networking, and asynchronous communication** using WinSock.
+    </td>
+  </tr>
+
+</table>

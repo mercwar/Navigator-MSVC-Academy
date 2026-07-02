@@ -1,0 +1,60 @@
+<!-- AVIS BLOCK
+FILE: chapterH.html
+PURPOSE: CYBORG Command Bus → DX Routing Layer
+AUTHOR: Demon
+-->
+
+<h2>Chapter H — CYBORG Command Bus → DX Routing Layer</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Command Bus</td>
+<td>
+CYBORG emits DX‑routable commands:
+<pre><code>
+struct CY_CMD {
+    int type;
+    void *payload;
+};
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Routing</td>
+<td>
+<pre><code>
+void CYBORG_Route(const CY_CMD &cmd)
+{
+    DXVector *dx = avis.spine.dx;
+    MERCG_Dispatch(dx,cmd);
+}
+</code></pre>
+CYBORG never touches DirectX directly.
+</td>
+</tr>
+
+<tr>
+<td>LLM‑Driven Execution</td>
+<td>
+LLM → CY_CMD → MERC‑G → DirectX  
+This is the safe execution chain.
+</td>
+</tr>
+
+<tr>
+<td>Command Types</td>
+<td>
+<pre><code>
+CMD_DRAW,
+CMD_TEXT,
+CMD_PRESENT,
+CMD_LOAD_TEXTURE,
+CMD_CLEAR
+</code></pre>
+</td>
+</tr>
+
+</table>

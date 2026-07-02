@@ -1,0 +1,89 @@
+<!-- AVIS BLOCK: chapter_avis_mercg.html -->
+<h2>Chapter D — MERC‑G: DirectX Render Core & Subsystem Hooks</h2>
+
+<table>
+  <tr><th>Topic</th><th>Description</th></tr>
+
+  <tr>
+    <td>MERC‑G Role</td>
+    <td>
+      <ul>
+        <li>MERC‑G = DirectX render core for MercWar.</li>
+        <li>Owns pipelines: D2D, DWrite, D3D11.</li>
+        <li>Exposes high‑level draw functions to CYBORG.</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Initialization from CBORD</td>
+    <td>
+      <pre><code>
+void MERCG_Init(DXVector *dx)
+{
+    MERCG_InitD2D(dx);
+    MERCG_InitDWrite(dx);
+    MERCG_InitD3D(dx);
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example Draw Line</td>
+    <td>
+      <pre><code>
+void MERCG_DrawLine(DXVector *dx, const LinePayload *p)
+{
+    ID2D1HwndRenderTarget *rt = MERCG_GetRT(dx);
+    ID2D1SolidColorBrush  *b  = MERCG_GetBrush(dx, p->color);
+
+    rt->BeginDraw();
+    rt->DrawLine(
+        D2D1::Point2F(p->x1, p->y1),
+        D2D1::Point2F(p->x2, p->y2),
+        b,
+        p->thickness
+    );
+    rt->EndDraw();
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example Draw Text</td>
+    <td>
+      <pre><code>
+void MERCG_DrawText(DXVector *dx, const TextPayload *p)
+{
+    ID2D1HwndRenderTarget *rt = MERCG_GetRT(dx);
+    IDWriteTextFormat      *fmt= MERCG_GetFormat(p->font, p->size);
+    ID2D1SolidColorBrush   *b  = MERCG_GetBrush(dx, p->color);
+
+    rt->BeginDraw();
+    rt->DrawText(
+        p->text,
+        (UINT)wcslen(p->text),
+        fmt,
+        D2D1::RectF(p->x, p->y, p->x2, p->y2),
+        b
+    );
+    rt->EndDraw();
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Subsystem Hook Map</td>
+    <td>
+      <ul>
+        <li>CBORD → creates DXVector.</li>
+        <li>MERC‑G → consumes DXVector, owns pipelines.</li>
+        <li>CYBORG → calls MERC‑G functions.</li>
+        <li>CYHY → monitors DXVector health.</li>
+      </ul>
+    </td>
+  </tr>
+</table>

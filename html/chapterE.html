@@ -1,0 +1,61 @@
+<!-- AVIS BLOCK: chapter_avis_flow.html -->
+<h2>Chapter E — AVIS Flow: From LLM Command to DirectX Frame</h2>
+
+<table>
+  <tr><th>Topic</th><th>Description</th></tr>
+
+  <tr>
+    <td>High‑Level Flow</td>
+    <td>
+      <ol>
+        <li>LLM (FireGem/CYBORG) parses user intent.</li>
+        <li>CYBORG emits `Cmd` objects.</li>
+        <li>AVIS verifies CBORD/MERC‑G/CYHY status.</li>
+        <li>CYBORG routes commands to MERC‑G using DXVector.</li>
+        <li>MERC‑G issues DirectX calls; CBORD swap chain presents.</li>
+      </ol>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Frame Tick</td>
+    <td>
+      <pre><code>
+void MercWar_Tick(float dt)
+{
+    CYHY_Update();              // health
+    CYBORG_PullCommands();      // from LLM / scripts
+
+    if (!avis.dxHealth.deviceLost) {
+        CYBORG_ExecuteQueue();  // calls MERC-G
+        avis.cbord->dx.swap->Present(1, 0);
+    } else {
+        CBORD_RebuildDX();      // recovery
+    }
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Vector Out Concept</td>
+    <td>
+      <ul>
+        <li>“Vector out” = subsystems never touch raw DX; they use DXVector.</li>
+        <li>DXVector is owned by CBORD, consumed by MERC‑G, referenced by CYBORG/CYHY.</li>
+        <li>AVIS is the registry + health oracle for that vector.</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>LLM‑Safe Boundary</td>
+    <td>
+      <ul>
+        <li>LLM only sees high‑level commands, not COM pointers.</li>
+        <li>Prevents DX misuse; all calls go through MERC‑G wrappers.</li>
+        <li>AVIS + CYHY enforce safety and recovery.</li>
+      </ul>
+    </td>
+  </tr>
+</table>

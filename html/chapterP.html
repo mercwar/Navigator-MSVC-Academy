@@ -1,0 +1,65 @@
+<!-- AVIS BLOCK
+FILE: chapterP.html
+PURPOSE: AVIS Arbitration Layer — Multi‑Subsystem DX Command Control
+AUTHOR: Demon
+-->
+
+<h2>Chapter P — AVIS Arbitration Layer: Multi‑Subsystem DX Command Control</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Arbitration Concept</td>
+<td>
+AVIS decides **which subsystem** may issue DirectX commands at any moment.
+<pre><code>
+enum AVIS_OWNER {
+    OWNER_CBORD,
+    OWNER_CYBORG,
+    OWNER_MERCG,
+    OWNER_NONE
+};
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Ownership Token</td>
+<td>
+<pre><code>
+struct AVIS_TOKEN {
+    AVIS_OWNER owner;
+    uint64_t   frameID;
+};
+</code></pre>
+Only the owner may vector into DirectX for that frame.
+</td>
+</tr>
+
+<tr>
+<td>Token Assignment</td>
+<td>
+<pre><code>
+AVIS_TOKEN AVIS_AssignToken()
+{
+    if (avis.cyhy->dxHealth.deviceLost)
+        return { OWNER_CBORD, avis.frameID };
+
+    return { OWNER_MERCG, avis.frameID };
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Call Gate</td>
+<td>
+<pre><code>
+if (avis.token.owner == OWNER_MERCG)
+    MERCG_Dispatch(dx,cmd);
+</code></pre>
+</td>
+</tr>
+
+</table>

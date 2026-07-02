@@ -1,0 +1,59 @@
+<!-- AVIS BLOCK
+FILE: chapterQ.html
+PURPOSE: CBORD DX State Management — Swap, RTV, DSV, Viewports
+AUTHOR: Demon
+-->
+
+<h2>Chapter Q — CBORD DX State Management: Swap, RTV, DSV, Viewports</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Swap Chain State</td>
+<td>
+CBORD maintains swap chain validity:
+<pre><code>
+bool CBORD_ValidateSwap(DXVector *dx)
+{
+    return dx->swap != nullptr;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Render Target State</td>
+<td>
+<pre><code>
+dx->d3d->CreateRenderTargetView(backBuffer,nullptr,&dx->rtv);
+</code></pre>
+RTV is stored in AVIS:
+<pre><code>
+avis.surface.rtv = dx->rtv;
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Depth Stencil State</td>
+<td>
+<pre><code>
+dx->d3d->CreateDepthStencilView(depthTex,nullptr,&dx->dsv);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Viewport Vector</td>
+<td>
+<pre><code>
+D3D11_VIEWPORT vp = {0};
+vp.Width  = avis.surface.width;
+vp.Height = avis.surface.height;
+dx->ctx->RSSetViewports(1,&vp);
+</code></pre>
+</td>
+</tr>
+
+</table>

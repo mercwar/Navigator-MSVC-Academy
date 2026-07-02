@@ -1,0 +1,243 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter20.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 20 (WinSock Networking)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 20 — WinSock Networking (TCP, UDP & Async Communication)</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>What is WinSock?</td>
+    <td>
+      WinSock is the Windows networking API used for:
+      <ul>
+        <li>TCP connections</li>
+        <li>UDP datagrams</li>
+        <li>DNS lookups</li>
+        <li>Async network events</li>
+        <li>Client/server communication</li>
+      </ul>
+      WinSock is based on Berkeley sockets but uses Windows‑specific initialization and cleanup.
+    </td>
+  </tr>
+
+  <!-- INIT -->
+  <tr>
+    <td>Initializing WinSock</td>
+    <td>
+      Every WinSock program begins with <strong>WSAStartup</strong>:
+      <pre><code>
+WSADATA wsa;
+WSAStartup(MAKEWORD(2,2), &wsa);
+      </code></pre>
+
+      Cleanup:
+      <pre><code>
+WSACleanup();
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- SOCKET CREATION -->
+  <tr>
+    <td>Creating a Socket</td>
+    <td>
+      <pre><code>
+SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+      </code></pre>
+
+      Parameters:
+      <ul>
+        <li><strong>AF_INET</strong> — IPv4</li>
+        <li><strong>SOCK_STREAM</strong> — TCP</li>
+        <li><strong>IPPROTO_TCP</strong> — TCP protocol</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- TCP CLIENT -->
+  <tr>
+    <td>TCP Client</td>
+    <td>
+      <pre><code>
+SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+struct sockaddr_in server;
+server.sin_family = AF_INET;
+server.sin_port   = htons(8080);
+server.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+connect(s, (struct sockaddr*)&server, sizeof(server));
+
+send(s, "Hello", 5, 0);
+
+char buffer[256];
+int r = recv(s, buffer, 256, 0);
+
+closesocket(s);
+      </code></pre>
+      TCP is connection‑oriented and reliable.
+    </td>
+  </tr>
+
+  <!-- TCP SERVER -->
+  <tr>
+    <td>TCP Server</td>
+    <td>
+      <pre><code>
+SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+struct sockaddr_in addr;
+addr.sin_family = AF_INET;
+addr.sin_port   = htons(8080);
+addr.sin_addr.s_addr = INADDR_ANY;
+
+bind(s, (struct sockaddr*)&addr, sizeof(addr));
+listen(s, 5);
+
+SOCKET client = accept(s, NULL, NULL);
+
+send(client, "Welcome!", 8, 0);
+
+closesocket(client);
+closesocket(s);
+      </code></pre>
+      Servers use <strong>bind → listen → accept</strong>.
+    </td>
+  </tr>
+
+  <!-- UDP -->
+  <tr>
+    <td>UDP Socket</td>
+    <td>
+      <pre><code>
+SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+      </code></pre>
+
+      UDP send:
+      <pre><code>
+sendto(s, "Ping", 4, 0,
+       (struct sockaddr*)&addr, sizeof(addr));
+      </code></pre>
+
+      UDP receive:
+      <pre><code>
+recvfrom(s, buffer, 256, 0,
+         (struct sockaddr*)&from, &fromLen);
+      </code></pre>
+
+      UDP is connectionless and fast.
+    </td>
+  </tr>
+
+  <!-- ASYNC -->
+  <tr>
+    <td>Async Networking (WSAAsyncSelect)</td>
+    <td>
+      WinSock can send network events to a window:
+      <pre><code>
+WSAAsyncSelect(s, hwnd, WM_USER + 100,
+               FD_READ | FD_WRITE | FD_CONNECT | FD_CLOSE);
+      </code></pre>
+
+      Handle in WndProc:
+      <pre><code>
+case WM_USER + 100:
+    if (WSAGETSELECTEVENT(lParam) == FD_READ) {
+        recv(s, buffer, 256, 0);
+    }
+    return 0;
+      </code></pre>
+
+      This allows non‑blocking networking in GUI apps.
+    </td>
+  </tr>
+
+  <!-- SELECT -->
+  <tr>
+    <td>Non‑Blocking Sockets</td>
+    <td>
+      <pre><code>
+u_long mode = 1;
+ioctlsocket(s, FIONBIO, &mode);
+      </code></pre>
+
+      Now <strong>recv()</strong> returns immediately instead of blocking.
+    </td>
+  </tr>
+
+  <!-- GETADDRINFO -->
+  <tr>
+    <td>DNS Lookup (getaddrinfo)</td>
+    <td>
+      <pre><code>
+ADDRINFO hints = {0};
+hints.ai_family = AF_INET;
+
+ADDRINFO *result;
+getaddrinfo("example.com", "80", &hints, &result);
+      </code></pre>
+
+      Extract IP:
+      <pre><code>
+struct sockaddr_in *addr =
+    (struct sockaddr_in*)result->ai_addr;
+
+char *ip = inet_ntoa(addr->sin_addr);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL PROGRAM -->
+  <tr>
+    <td>Full TCP Client Example</td>
+    <td>
+      <pre><code>
+#include &lt;winsock2.h&gt;
+#include &lt;ws2tcpip.h&gt;
+#pragma comment(lib, "ws2_32.lib")
+
+int main(void)
+{
+    WSADATA wsa;
+    WSAStartup(MAKEWORD(2,2), &wsa);
+
+    SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    struct sockaddr_in server;
+    server.sin_family = AF_INET;
+    server.sin_port   = htons(8080);
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    connect(s, (struct sockaddr*)&server, sizeof(server));
+
+    send(s, "Hello Server", 12, 0);
+
+    char buffer[256];
+    int r = recv(s, buffer, 256, 0);
+
+    closesocket(s);
+    WSACleanup();
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 21 introduces **file I/O, memory‑mapped files, and advanced WinAPI storage operations**.
+    </td>
+  </tr>
+
+</table>

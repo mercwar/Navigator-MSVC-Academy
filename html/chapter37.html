@@ -1,0 +1,318 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter37.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 37 (AI Systems)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 37 — AI Systems: Pathfinding, Steering, Decision Trees & State Machines</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>AI Overview</td>
+    <td>
+      Game AI consists of:
+      <ul>
+        <li>Pathfinding (A*)</li>
+        <li>Steering behaviors</li>
+        <li>Decision trees</li>
+        <li>Finite‑state machines (FSM)</li>
+        <li>Behavior trees</li>
+      </ul>
+
+      AI runs every frame and reacts to the world.
+    </td>
+  </tr>
+
+  <!-- GRID -->
+  <tr>
+    <td>Grid Navigation</td>
+    <td>
+      Pathfinding often uses a grid:
+
+      <pre><code>
+struct Node {
+    int x, y;
+    bool walkable;
+    float g, h, f;
+    Node *parent;
+};
+      </code></pre>
+
+      <strong>g</strong> = cost from start  
+      <strong>h</strong> = heuristic  
+      <strong>f</strong> = g + h  
+    </td>
+  </tr>
+
+  <!-- A* -->
+  <tr>
+    <td>A* Pathfinding Algorithm</td>
+    <td>
+      A* finds shortest path using heuristics.
+
+      Heuristic:
+      <pre><code>
+float Heuristic(Node *a, Node *b)
+{
+    return abs(a->x - b->x) + abs(a->y - b->y);
+}
+      </code></pre>
+
+      Main loop:
+      <pre><code>
+while (!open.empty()) {
+    Node *n = GetLowestF(open);
+
+    if (n == goal)
+        return BuildPath(n);
+
+    MoveToClosed(n);
+
+    for (Node *m : Neighbors(n)) {
+        if (!m->walkable || InClosed(m))
+            continue;
+
+        float gNew = n->g + 1;
+
+        if (!InOpen(m) || gNew < m->g) {
+            m->g = gNew;
+            m->h = Heuristic(m, goal);
+            m->f = m->g + m->h;
+            m->parent = n;
+
+            AddToOpen(m);
+        }
+    }
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- PATH SMOOTHING -->
+  <tr>
+    <td>Path Smoothing</td>
+    <td>
+      After A*, smooth path by removing unnecessary nodes:
+
+      <pre><code>
+bool ClearLine(Node *a, Node *b)
+{
+    // raycast or grid check
+}
+      </code></pre>
+
+      <pre><code>
+vector<Node*> Smooth(vector<Node*> path)
+{
+    vector<Node*> out;
+    out.push_back(path[0]);
+
+    int last = 0;
+    for (int i = 1; i < path.size(); i++) {
+        if (!ClearLine(path[last], path[i])) {
+            out.push_back(path[i-1]);
+            last = i-1;
+        }
+    }
+
+    out.push_back(path.back());
+    return out;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- STEERING -->
+  <tr>
+    <td>Steering Behaviors</td>
+    <td>
+      Steering creates smooth movement.
+
+      Seek:
+      <pre><code>
+XMFLOAT3 Seek(XMFLOAT3 pos, XMFLOAT3 target)
+{
+    XMFLOAT3 desired = Normalize(target - pos) * maxSpeed;
+    return desired - velocity;
+}
+      </code></pre>
+
+      Flee:
+      <pre><code>
+XMFLOAT3 Flee(XMFLOAT3 pos, XMFLOAT3 threat)
+{
+    XMFLOAT3 desired = Normalize(pos - threat) * maxSpeed;
+    return desired - velocity;
+}
+      </code></pre>
+
+      Arrive:
+      <pre><code>
+float dist = Length(target - pos);
+float speed = maxSpeed * (dist / slowRadius);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- COMBINED STEERING -->
+  <tr>
+    <td>Combining Steering</td>
+    <td>
+      Weighted sum:
+      <pre><code>
+XMFLOAT3 force =
+    Seek(pos, target) * 1.0f +
+    Avoid(obstacles) * 2.0f +
+    Align(neighbors) * 0.5f;
+      </code></pre>
+
+      Clamp:
+      <pre><code>
+force = Clamp(force, maxForce);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FSM -->
+  <tr>
+    <td>Finite‑State Machine (FSM)</td>
+    <td>
+      FSM controls AI behavior:
+
+      <pre><code>
+enum State {
+    Idle,
+    Patrol,
+    Chase,
+    Attack
+};
+
+State current;
+      </code></pre>
+
+      Update:
+      <pre><code>
+switch (current) {
+    case Idle:
+        if (SeePlayer()) current = Chase;
+        break;
+
+    case Patrol:
+        if (SeePlayer()) current = Chase;
+        break;
+
+    case Chase:
+        MoveToward(player);
+        if (DistanceTo(player) < 2)
+            current = Attack;
+        break;
+
+    case Attack:
+        DoAttack();
+        if (!SeePlayer()) current = Patrol;
+        break;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- DECISION TREE -->
+  <tr>
+    <td>Decision Trees</td>
+    <td>
+      Decision trees evaluate conditions:
+
+      <pre><code>
+if (Health < 20)
+    if (HasMedkit)
+        UseMedkit();
+    else
+        Flee();
+else
+    if (SeeEnemy)
+        Attack();
+    else
+        Patrol();
+      </code></pre>
+
+      Decision trees are simple but powerful.
+    </td>
+  </tr>
+
+  <!-- BEHAVIOR TREE -->
+  <tr>
+    <td>Behavior Trees</td>
+    <td>
+      Behavior trees use nodes:
+      <ul>
+        <li>Selector</li>
+        <li>Sequence</li>
+        <li>Decorator</li>
+        <li>Leaf actions</li>
+      </ul>
+
+      Example:
+      <pre><code>
+Selector(
+    Sequence(
+        Condition(SeeEnemy),
+        Action(Attack)
+    ),
+    Sequence(
+        Condition(LowHealth),
+        Action(Flee)
+    ),
+    Action(Patrol)
+);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- NAVMESH -->
+  <tr>
+    <td>NavMesh Navigation</td>
+    <td>
+      NavMesh is better than grids:
+
+      <ul>
+        <li>Triangles instead of tiles</li>
+        <li>Smoother paths</li>
+        <li>Fewer nodes</li>
+        <li>Better for 3D worlds</li>
+      </ul>
+
+      Pathfinding uses polygon adjacency.
+    </td>
+  </tr>
+
+  <!-- FULL AI LOOP -->
+  <tr>
+    <td>Full AI Loop</td>
+    <td>
+      <pre><code>
+while (running) {
+    SenseWorld();
+    Think();     // FSM, BT, decision tree
+    Plan();      // A*, steering
+    Act();       // movement, animation
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 38 introduces **networking — sockets, client/server architecture, replication, and real‑time multiplayer systems**.
+    </td>
+  </tr>
+
+</table>

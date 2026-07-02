@@ -1,0 +1,60 @@
+<!-- AVIS BLOCK
+FILE: chapterL.html
+PURPOSE: CBORD Windowing → DirectX Surface Vector
+AUTHOR: Demon
+-->
+
+<h2>Chapter L — CBORD Windowing → DirectX Surface Vector</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Window Class</td>
+<td>
+CBORD defines the DX‑compatible window:
+<pre><code>
+WNDCLASSEX wc = { sizeof(wc) };
+wc.lpfnWndProc = CBORD_WndProc;
+wc.lpszClassName = "MercWarDX";
+RegisterClassEx(&wc);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>HWND Vector</td>
+<td>
+<pre><code>
+cbord.hwnd = CreateWindowEx(
+    0,"MercWarDX","MercWar Engine",
+    WS_OVERLAPPEDWINDOW,
+    x,y,w,h,
+    nullptr,nullptr,hinst,nullptr
+);
+</code></pre>
+AVIS stores this as the **surface vector**.
+</td>
+</tr>
+
+<tr>
+<td>DXGI Surface Binding</td>
+<td>
+<pre><code>
+dx->swap->GetBuffer(0,__uuidof(ID3D11Texture2D),(void**)&backBuffer);
+dx->d3d->CreateRenderTargetView(backBuffer,nullptr,&dx->rtv);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>AVIS Surface Registration</td>
+<td>
+<pre><code>
+avis.surface.hwnd = cbord.hwnd;
+avis.surface.rtv  = dx->rtv;
+</code></pre>
+</td>
+</tr>
+
+</table>

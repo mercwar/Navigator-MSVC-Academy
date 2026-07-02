@@ -1,0 +1,236 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter34.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 34 (Post‑Processing Effects)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 34 — Post‑Processing Effects: Bloom, Blur, HDR & Full‑Screen Shaders</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>What is Post‑Processing?</td>
+    <td>
+      Post‑processing applies GPU effects **after** the main scene is rendered.  
+      Common effects:
+      <ul>
+        <li>Bloom</li>
+        <li>Gaussian blur</li>
+        <li>HDR tonemapping</li>
+        <li>Color grading</li>
+        <li>Vignette</li>
+        <li>Screen‑space distortion</li>
+      </ul>
+
+      All post‑processing uses:
+      <strong>Render‑to‑texture → Full‑screen quad → Pixel shader</strong>.
+    </td>
+  </tr>
+
+  <!-- RENDER TO TEXTURE -->
+  <tr>
+    <td>Render‑to‑Texture Pipeline</td>
+    <td>
+      Step 1 — Create off‑screen texture:
+      <pre><code>
+D3D11_TEXTURE2D_DESC td = {0};
+td.Width = width;
+td.Height = height;
+td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+td.BindFlags = D3D11_BIND_RENDER_TARGET |
+               D3D11_BIND_SHADER_RESOURCE;
+
+ID3D11Texture2D *sceneTex;
+device->CreateTexture2D(&td, NULL, &sceneTex);
+      </code></pre>
+
+      Step 2 — Create RTV + SRV:
+      <pre><code>
+ID3D11RenderTargetView *sceneRTV;
+device->CreateRenderTargetView(sceneTex, NULL, &sceneRTV);
+
+ID3D11ShaderResourceView *sceneSRV;
+device->CreateShaderResourceView(sceneTex, NULL, &sceneSRV);
+      </code></pre>
+
+      Step 3 — Render scene into sceneRTV instead of screen.
+    </td>
+  </tr>
+
+  <!-- FULL SCREEN QUAD -->
+  <tr>
+    <td>Full‑Screen Quad</td>
+    <td>
+      Full‑screen quad vertices:
+      <pre><code>
+struct FSQ {
+    float2 pos;
+    float2 uv;
+};
+
+FSQ quad[] = {
+    { {-1,-1}, {0,1} },
+    { {-1, 1}, {0,0} },
+    { { 1, 1}, {1,0} },
+    { { 1,-1}, {1,1} }
+};
+      </code></pre>
+
+      Draw with:
+      <pre><code>
+context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TRIANGLESTRIP);
+context->Draw(4, 0);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- BLOOM -->
+  <tr>
+    <td>Bloom Effect</td>
+    <td>
+      Bloom extracts bright pixels and blurs them.
+
+      Step 1 — Extract bright areas:
+      <pre><code>
+float4 main(float2 uv : TEXCOORD) : SV_TARGET
+{
+    float3 c = scene.Sample(samp, uv).rgb;
+    float brightness = max(max(c.r, c.g), c.b);
+
+    return brightness > 1.0f ? float4(c,1) : float4(0,0,0,1);
+}
+      </code></pre>
+
+      Step 2 — Blur horizontally  
+      Step 3 — Blur vertically  
+      Step 4 — Add back to original scene:
+      <pre><code>
+finalColor = sceneColor + bloomColor * 0.7f;
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- GAUSSIAN BLUR -->
+  <tr>
+    <td>Gaussian Blur</td>
+    <td>
+      Horizontal blur:
+      <pre><code>
+float4 main(float2 uv : TEXCOORD) : SV_TARGET
+{
+    float2 texel = float2(1.0f/width, 0);
+
+    float3 sum =
+        scene.Sample(samp, uv - texel*4).rgb * 0.05 +
+        scene.Sample(samp, uv - texel*3).rgb * 0.09 +
+        scene.Sample(samp, uv - texel*2).rgb * 0.12 +
+        scene.Sample(samp, uv - texel*1).rgb * 0.15 +
+        scene.Sample(samp, uv).rgb          * 0.16 +
+        scene.Sample(samp, uv + texel*1).rgb * 0.15 +
+        scene.Sample(samp, uv + texel*2).rgb * 0.12 +
+        scene.Sample(samp, uv + texel*3).rgb * 0.09 +
+        scene.Sample(samp, uv + texel*4).rgb * 0.05;
+
+    return float4(sum, 1);
+}
+      </code></pre>
+
+      Vertical blur is identical but uses:
+      <pre><code>
+float2 texel = float2(0, 1.0f/height);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- HDR TONEMAP -->
+  <tr>
+    <td>HDR Tonemapping</td>
+    <td>
+      HDR tonemapping compresses high brightness into displayable range.
+
+      Reinhard:
+      <pre><code>
+float3 hdr = scene.Sample(samp, uv).rgb;
+float3 mapped = hdr / (hdr + 1.0f);
+return float4(mapped, 1);
+      </code></pre>
+
+      Filmic:
+      <pre><code>
+float3 x = max(hdr - 0.004f, 0);
+float3 mapped = (x*(6.2f*x + 0.5f)) /
+                (x*(6.2f*x + 1.7f) + 0.06f);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- COLOR GRADING -->
+  <tr>
+    <td>Color Grading</td>
+    <td>
+      Apply LUT (lookup table):
+      <pre><code>
+float3 c = scene.Sample(samp, uv).rgb;
+float3 graded = lut.Sample(sampLUT, c).rgb;
+return float4(graded, 1);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- VIGNETTE -->
+  <tr>
+    <td>Vignette</td>
+    <td>
+      <pre><code>
+float2 p = uv * 2 - 1;
+float v = 1 - dot(p,p);
+v = saturate(v);
+
+float3 c = scene.Sample(samp, uv).rgb;
+return float4(c * v, 1);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL PIPELINE -->
+  <tr>
+    <td>Full Post‑Processing Pipeline</td>
+    <td>
+      <pre><code>
+// 1. Render scene → sceneRTV
+RenderScene();
+
+// 2. Extract bright → brightRTV
+ExtractBright();
+
+// 3. Blur → blurRTV
+BlurHorizontal();
+BlurVertical();
+
+// 4. Tonemap → toneRTV
+Tonemap();
+
+// 5. Composite → backbuffer
+CompositeFinal();
+
+// 6. Present
+swap->Present(1,0);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 35 introduces **screen‑space effects — SSAO, SSR, depth‑based fog, and advanced GPU post‑processing**.
+    </td>
+  </tr>
+
+</table>

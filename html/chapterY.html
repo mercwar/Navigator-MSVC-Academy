@@ -1,0 +1,69 @@
+<!-- AVIS BLOCK
+FILE: chapterY.html
+PURPOSE: MERC‑G Unified DX Pipeline — Command Fusion & Final Present
+AUTHOR: Demon
+-->
+
+<h2>Chapter Y — MERC‑G Unified DX Pipeline: Command Fusion & Final Present</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Unified Pipeline Concept</td>
+<td>
+MERC‑G merges all DX pipelines into one unified frame:
+<pre><code>
+void MERCG_Frame(DXVector *dx)
+{
+    MERCG_Begin(dx);
+    MERCG_D2DPass(dx);
+    MERCG_DWritePass(dx);
+    MERCG_D3DPass(dx);
+    MERCG_End(dx);
+    dx->swap->Present(1,0);
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>D2D Pass</td>
+<td>
+<pre><code>
+rt->BeginDraw();
+rt->DrawLine(...);
+rt->EndDraw();
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DWrite Pass</td>
+<td>
+<pre><code>
+rt->DrawText(...);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>D3D Pass</td>
+<td>
+<pre><code>
+dx->ctx->DrawIndexed(...);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>AVIS Final Gate</td>
+<td>
+<pre><code>
+if (!avis.cyhy->matrix.deviceLost)
+    MERCG_Frame(dx);
+</code></pre>
+</td>
+</tr>
+
+</table>

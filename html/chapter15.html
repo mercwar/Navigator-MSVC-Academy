@@ -1,0 +1,271 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter15.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 15 (GDI Drawing)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 15 — Drawing with GDI (Graphics Device Interface)</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>What is GDI?</td>
+    <td>
+      GDI (Graphics Device Interface) is the core Windows subsystem for drawing:
+      <ul>
+        <li>Text</li>
+        <li>Lines</li>
+        <li>Rectangles</li>
+        <li>Ellipses</li>
+        <li>Bitmaps</li>
+        <li>Custom shapes</li>
+      </ul>
+      GDI is immediate-mode: drawing happens during <strong>WM_PAINT</strong>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>WM_PAINT</td>
+    <td>
+      All drawing must occur inside a <strong>WM_PAINT</strong> handler:
+      <pre><code>
+case WM_PAINT: {
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+
+    // drawing here
+
+    EndPaint(hwnd, &ps);
+    return 0;
+}
+      </code></pre>
+      <strong>HDC</strong> is the device context — the drawing surface.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Drawing text</td>
+    <td>
+      <pre><code>
+TextOut(hdc, 10, 10, "Hello GDI!", 11);
+      </code></pre>
+      <strong>TextOut</strong> draws simple text at a given position.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Drawing lines</td>
+    <td>
+      <pre><code>
+MoveToEx(hdc, 50, 50, NULL);
+LineTo(hdc, 200, 200);
+      </code></pre>
+      <strong>MoveToEx</strong> sets the starting point.  
+      <strong>LineTo</strong> draws the line.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Drawing rectangles</td>
+    <td>
+      <pre><code>
+Rectangle(hdc, 20, 20, 200, 120);
+      </code></pre>
+      Draws a rectangle using the current pen and brush.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Drawing ellipses</td>
+    <td>
+      <pre><code>
+Ellipse(hdc, 100, 100, 300, 250);
+      </code></pre>
+      Draws an ellipse inside the bounding rectangle.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Pens</td>
+    <td>
+      Pens define line color and thickness:
+      <pre><code>
+HPEN pen = CreatePen(PS_SOLID, 3, RGB(255,0,0));
+HPEN old = SelectObject(hdc, pen);
+
+MoveToEx(hdc, 10, 10, NULL);
+LineTo(hdc, 200, 10);
+
+SelectObject(hdc, old);
+DeleteObject(pen);
+      </code></pre>
+      Always restore and delete GDI objects.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Brushes</td>
+    <td>
+      Brushes fill shapes:
+      <pre><code>
+HBRUSH brush = CreateSolidBrush(RGB(0,255,0));
+HBRUSH old = SelectObject(hdc, brush);
+
+Rectangle(hdc, 50, 50, 150, 150);
+
+SelectObject(hdc, old);
+DeleteObject(brush);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Fonts</td>
+    <td>
+      <pre><code>
+HFONT font = CreateFont(
+    32, 0, 0, 0, FW_BOLD,
+    FALSE, FALSE, FALSE,
+    ANSI_CHARSET,
+    OUT_DEFAULT_PRECIS,
+    CLIP_DEFAULT_PRECIS,
+    DEFAULT_QUALITY,
+    DEFAULT_PITCH,
+    "Arial"
+);
+
+HFONT old = SelectObject(hdc, font);
+TextOut(hdc, 10, 50, "Big Bold Text", 13);
+SelectObject(hdc, old);
+DeleteObject(font);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Colors</td>
+    <td>
+      GDI uses <strong>RGB()</strong>:
+      <pre><code>
+COLORREF red = RGB(255,0,0);
+COLORREF green = RGB(0,255,0);
+COLORREF blue = RGB(0,0,255);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Double buffering</td>
+    <td>
+      Prevent flicker by drawing to a memory DC:
+      <pre><code>
+HDC mem = CreateCompatibleDC(hdc);
+HBITMAP bmp = CreateCompatibleBitmap(hdc, width, height);
+SelectObject(mem, bmp);
+
+// draw to mem instead of hdc
+
+BitBlt(hdc, 0, 0, width, height, mem, 0, 0, SRCCOPY);
+
+DeleteObject(bmp);
+DeleteDC(mem);
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Full GDI Example</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
+                         WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            // Text
+            TextOut(hdc, 10, 10, "Hello GDI!", 11);
+
+            // Line
+            MoveToEx(hdc, 20, 40, NULL);
+            LineTo(hdc, 200, 40);
+
+            // Rectangle
+            Rectangle(hdc, 20, 60, 200, 140);
+
+            // Ellipse
+            Ellipse(hdc, 220, 60, 380, 140);
+
+            EndPaint(hwnd, &ps);
+            return 0;
+        }
+
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance,
+                   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    WNDCLASSEX wc = {0};
+    wc.cbSize        = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc   = WndProc;
+    wc.hInstance     = hInstance;
+    wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+    wc.lpszClassName = "GDIWindow";
+
+    RegisterClassEx(&wc);
+
+    HWND hwnd = CreateWindowEx(
+        0,
+        "GDIWindow",
+        "GDI Drawing Demo",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        800, 600,
+        NULL, NULL,
+        hInstance,
+        NULL
+    );
+
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 16 introduces **menus, buttons, and controls** — building interactive WinAPI GUIs.
+    </td>
+  </tr>
+
+</table>
