@@ -1,0 +1,212 @@
+/* --- Core Typography --- */
+h1, h2 {
+  color: #00e5ff; /* Ice Blue */
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+#content h1, #content h2, #content h3 {
+  color: #00e5ff; /* Ice Blue */
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 229, 255, 0.4);
+  margin: 6px 0;
+  font-weight: 600;
+}
+
+#content h2 {
+  background: linear-gradient(90deg, rgba(255, 106, 0, 0.15), rgba(0, 229, 255, 0.15)); /* Fire to Ice */
+  padding: 4px 12px;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  border-left: 3px solid #ff6a00; /* Fire Orange accent border */
+}
+
+/* --- Gold Fonts --- */
+#content td, #content p, #content ul li {
+  color: #ffe066 !important; /* Premium Gold Font */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+#content th {
+  color: #ffaa00 !important; /* Deep Gold/Amber */
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+  font-weight: 600;
+  height: 100%;
+  line-height: 1.4;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  backdrop-filter: blur(6px);
+  box-sizing: border-box;
+  background: rgba(255, 106, 0, 0.15) !important; /* Fire Orange tint for headers */
+}
+
+#content ul li strong {
+  padding: 2px 5px !important;
+  color: #ffcb05 !important; /* Pure Gold */
+  text-shadow: 0 0 6px rgba(255, 203, 5, 0.5);
+}
+
+/* --- Code & Pre blocks (Ice Accent) --- */
+#content code {
+  color: #00e5ff !important; /* Ice Blue */
+  font-family: Consolas, monospace;
+}
+
+pre, #content pre {
+  background: #080d14eb !important; /* Deep Ice Navy */
+  border: 1px solid rgba(0, 229, 255, 0.25) !important; /* Ice Blue Border */
+  box-shadow: inset 0 0 12px #00000099, 0 0 8px rgba(0, 229, 255, 0.1) !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  max-height: 60vh;
+  overflow-y: auto !important;
+  border-radius: 8px;
+  margin: 0;
+  padding: 10px;
+}
+
+/* --- Containers & Tables (75% Solid Black) --- */
+table, #content table {
+  margin-bottom: 20px;
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  background: transparent !important;
+}
+
+#content table, #content td { 
+  background: rgba(0, 0, 0, 0.75) !important; /* 75% Solid Black */
+}
+
+pre, td, th, #content td, #content th {
+  padding: 10px;
+  vertical-align: top;
+  border: 1px solid rgba(0, 229, 255, 0.15) !important; /* Subtle Ice Borders */
+}
+
+#content td {
+  font-size: 0.8rem;
+  white-space: normal !important;
+}
+
+#content tr:first-child th {
+  min-height: 48px;
+  display: table-cell;
+}
+
+#content p, #content ul {
+  background: rgba(0, 0, 0, 0.75) !important; /* 75% Solid Black */
+  padding: 12px 10px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
+#content p {
+  padding: 6px 10px !important;
+  max-width: 100% !important;
+  word-wrap: break-word !important;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+#content ul {
+  padding-left: 28px !important;
+  margin-left: 0 !important;
+  list-style-position: inside;
+}
+
+#content ul li {
+  padding: 6px 4px !important;
+}
+
+/* --- Layout Components --- */
+#contentCell {
+  height: 100vh;
+  width: 100vh;
+  overflow: hidden;
+  background-image: url(MWCT-BG.png?v=1);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  background-attachment: scroll;
+}
+
+#content-bnr {
+  width: 100%;
+  height: 355px;
+  background-image: url(msvc-new1.png?v=1);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+}
+
+#content {
+  width: 100%;
+  height: 100vh;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  background: transparent !important;
+  box-sizing: border-box;
+}
+
+hr, #content hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 229, 255, 0.2) !important;
+  margin: 24px 0;
+}
+
+/* --- Topic Item Styling --- */
+.item-topic {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #ffe066; /* Gold */
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  border-left: 4px solid #00e5ff; /* Ice Blue Edge */
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(255, 106, 0, 0.15)); /* Ice to Fire transition */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.item-desc {
+  font-size: 0.95rem;
+  color: #ffe066;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.05), 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.item-data {
+  font-size: 0.85rem;
+  color: #ffe066;
+  padding: 10px 14px;
+  background: rgba(8, 13, 20, 0.75);
+  border-radius: 8px;
+  border-left: 3px solid #ff6a00; /* Fire Orange Edge */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* --- Hover Effects --- */
+#content tr:hover td { 
+  background: rgba(0, 0, 0, 0.75) !important; 
+  animation: flashBorder 0.4s ease-in-out;
+}
+
+@keyframes flashBorder {
+  0% { outline: 1px solid rgba(0, 229, 255, 1); } /* Flashes Ice Blue */
+  100% { outline: 1px solid rgba(0, 229, 255, 0); }
+}

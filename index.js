@@ -34,43 +34,43 @@ function collapseOthers(exceptId) {
     }
   });
 }
-
 /* CHAPTER LOADER — FIXED TO HANDLE LETTERS SAFELY */
 function loadChapter(id) {
-
   let file;
 
-  /* If HTML calls loadChapter(A) without quotes → convert to string */
   if (typeof id === "undefined") {
     document.getElementById("content").innerHTML =
       "<p>Invalid chapter call: ID is undefined.</p>";
     return;
   }
 
-  /* If ID is a number */
   if (typeof id === "number") {
     file = "html/chapter" + String(id).padStart(2, "0") + ".html";
-  }
-
-  /* If ID is a letter OR accidentally passed as a variable → convert to string */
-  else {
+  } else {
     const letter = String(id).trim().toUpperCase();
     file = "html/chapter" + letter + ".html";
   }
 
-  /* Fetch + load */
   fetch(file)
     .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
-	  
       return r.text();
     })
     .then(html => {
       const content = document.getElementById("content");
       if (!content) return;
       content.innerHTML = html;
-	        // Fire the listener
+
+      // Fire the listener
       document.dispatchEvent(new Event("chapterLoaded"));
+
+      // 🔥 Auto scroll the content cell back to top
+      const contentCell = document.getElementById("content");
+      if (contentCell) {
+        contentCell.scrollTop = 0; // reset scroll position
+      }
+      // Also scroll the whole window if needed
+      window.scrollTo({ top: 0, behavior: "smooth" });
     })
     .catch(err => {
       const content = document.getElementById("content");
@@ -79,6 +79,7 @@ function loadChapter(id) {
         "<p>Error loading chapter " + id + ": " + err + "</p>";
     });
 }
+
 
 /* INITIALIZATION: ATTACH LISTENERS */
 document.addEventListener("DOMContentLoaded", () => {
