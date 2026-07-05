@@ -58,7 +58,7 @@ body {
   min-width: 280px;
   max-width: 280px;
 
-  height: 100vh;              /* full viewport height */
+  height: auto;              /* full viewport height */
   overflow-y: auto;           /* scroll if content exceeds */
 
   /* Background image settings */
