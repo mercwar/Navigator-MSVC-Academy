@@ -2,10 +2,14 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: auto;          /* let body grow naturally */
-  min-height: 100%;      /* ensure full coverage */
-  overflow-x: hidden;    /* only block horizontal scroll */
-  overflow-y: auto;      /* allow vertical scroll */
+  min-height: 100%;       /* allow full growth */
+
+  overflow: visible;     /* no horizontal scroll */
+
+}
+
+body.pinned {
+  overflow-y: hidden;     /* lock scroll when pinned */
 }
 
 body {

@@ -6,52 +6,42 @@ AUTHOR: Demon
 NOTES: Dropdown animation, arrow indicators, chapter loading, letter-safe loader
 */
 // Global states to track position and lock configuration
+
 let isScrollPinned = false;
 let pinnedScrollPosition = 0;
 
 function toggleScrollPin() {
+  const btn = document.getElementById("scrollPinBtn");
   const icon = document.getElementById("scrollPinIcon");
   const text = document.getElementById("scrollPinText");
-  const btn = document.getElementById("scrollPinBtn");
 
   isScrollPinned = !isScrollPinned;
 
   if (isScrollPinned) {
-    // 🔥 Capture immediately
-    pinnedScrollPosition = window.scrollY;
-
-    // Lock body scroll
-    document.body.style.overflow = "hidden";
-
-    // Update UI
+    pinnedScrollPosition = window.scrollY;   // capture immediately
+    document.body.classList.add("pinned");   // lock body
     icon.textContent = "🔒";
     text.textContent = "Pinned";
-    btn.style.borderColor = "#ff6a00";
+    btn.classList.add("pinned");
   } else {
-    // Unlock body scroll
-    document.body.style.overflow = "auto";
-
-    // Update UI
+    document.body.classList.remove("pinned"); // unlock body
     icon.textContent = "🔓";
     text.textContent = "Unpinned";
-    btn.style.borderColor = "#ffe066";
+    btn.classList.remove("pinned");
   }
 }
+
 function handleFrameLoadScroll() {
   if (isScrollPinned) {
-  
-
-    // Delay the scroll restore so the DOM has time to render
+    // restore after DOM settles
     setTimeout(() => {
       window.scrollTo({ top: pinnedScrollPosition, behavior: "instant" });
-    
-    }, 150); // 150ms delay, adjust as needed
+    }, 150);
+    setTimeout(() => {
+      window.scrollTo({ top: pinnedScrollPosition, behavior: "instant" });
+    }, 400);
   }
 }
-
-
-
-
 
 /* DROPDOWN TOGGLER WITH INDICATORS */
 function toggleDropdown(id) {
