@@ -1,0 +1,113 @@
+<!-- AVIS BLOCK
+FILE: chapter_r.html
+PURPOSE: Navigator‑MSVC Academy — Monitoring Guide
+AUTHOR: Demon
+-->
+
+<h2>Chapter R — Monitoring</h2>
+
+<table>
+<tr><th>Area</th><th>Routine</th></tr>
+
+<tr>
+<td>Apache Logs</td>
+<td>
+<pre><code>
+Location:
+C:\Apache24\logs\error.log
+C:\Apache24\logs\access.log
+
+Routine:
+- Tail logs with: type error.log
+- Check access patterns daily
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>PHP Logs</td>
+<td>
+<pre><code>
+Edit php.ini:
+log_errors = On
+error_log = "C:/php/php_errors.log"
+
+Routine:
+- Review php_errors.log after deployments
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>MSVC Build Logs</td>
+<td>
+<pre><code>
+Enable verbose output:
+cl /Wall /Fe:app.exe source.cpp > build.log 2>&1
+
+Routine:
+- Scan build.log for warnings/errors
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>MSYS2 Build Logs</td>
+<td>
+<pre><code>
+Use Ninja with logging:
+ninja -j8 > ninja.log 2>&1
+
+Routine:
+- Review ninja.log for failed targets
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GitHub CLI Monitoring</td>
+<td>
+<pre><code>
+Run:
+gh issue list
+gh pr list
+gh run list
+
+Routine:
+- Track repo activity
+- Monitor CI/CD runs
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>System Resource Monitoring</td>
+<td>
+<pre><code>
+CMD commands:
+tasklist
+systeminfo
+wmic cpu get loadpercentage
+wmic os get freephysicalmemory
+
+Routine:
+- Check CPU/memory before builds
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy monitoring ensures:
+- Apache + PHP logs tracked
+- Build logs captured
+- GitHub activity monitored
+- System resources validated
+CMD only — no PowerShell
+</code></pre>
+</td>
+</tr>
+
+</table>

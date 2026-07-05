@@ -1,0 +1,121 @@
+<!-- AVIS BLOCK
+FILE: chapter_x.html
+PURPOSE: Navigator‑MSVC Academy — User Interface Enhancements
+AUTHOR: Demon
+-->
+
+<h2>Chapter X — User Interface Enhancements</h2>
+
+<table>
+<tr><th>Feature</th><th>Routine</th></tr>
+
+<tr>
+<td>Dropdown Expansion Logic</td>
+<td>
+<pre><code>
+HTML:
+<ul class="dropdown">
+  <li>
+    <a href="#">Menu</a>
+    <ul class="submenu">
+      <li><a href="chapter_w.html">Control</a></li>
+      <li><a href="chapter_u.html">Workflow</a></li>
+    </ul>
+  </li>
+</ul>
+
+CSS:
+.submenu { display: none; }
+.dropdown li:hover .submenu { display: block; }
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Scroll Behavior Fix</td>
+<td>
+<pre><code>
+CSS:
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+JS:
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute("href"))
+      .scrollIntoView({ behavior: "smooth" });
+  });
+});
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Animated Themes</td>
+<td>
+<pre><code>
+CSS:
+@keyframes goldPulse {
+  0% { background-color: #FFD700; }
+  50% { background-color: #FFA500; }
+  100% { background-color: #FFD700; }
+}
+
+.theme-gold {
+  animation: goldPulse 5s infinite;
+}
+
+@keyframes iceBlueFade {
+  0% { background-color: #87CEEB; }
+  100% { background-color: #4682B4; }
+}
+
+.theme-iceblue {
+  animation: iceBlueFade 8s alternate infinite;
+}
+
+@keyframes fireOrangeGlow {
+  0% { background-color: #FF4500; }
+  50% { background-color: #FF6347; }
+  100% { background-color: #FF4500; }
+}
+
+.theme-fireorange {
+  animation: fireOrangeGlow 6s infinite;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Responsive Layout</td>
+<td>
+<pre><code>
+CSS:
+@media (max-width: 768px) {
+  .menu { flex-direction: column; }
+  .submenu { position: relative; }
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy UI enhancements ensure:
+- Dropdown menus expand smoothly
+- Scroll behavior fixed
+- Animated themes applied
+- Responsive layout stable
+</code></pre>
+</td>
+</tr>
+
+</table>
