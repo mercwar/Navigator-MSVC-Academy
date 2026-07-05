@@ -1,0 +1,85 @@
+<!-- AVIS BLOCK
+FILE: chapter_b.html
+PURPOSE: Navigator‑MSVC Academy — MSYS2 / UCRT64 Installation
+AUTHOR: Demon
+-->
+
+<h2>Chapter B — MSYS2 / UCRT64 Installation</h2>
+
+<table>
+<tr><th>Step</th><th>Routine</th></tr>
+
+<tr>
+<td>Download</td>
+<td>
+<pre><code>
+Go to: https://www.msys2.org/
+Download latest installer (e.g., msys2-x86_64-20240504.exe)
+Install to: C:\msys64
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Update Core</td>
+<td>
+<pre><code>
+Open MSYS2 MSYS shell
+Run: pacman -Syu
+Close → reopen shell
+Run: pacman -Su
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Install UCRT64 Toolchain</td>
+<td>
+<pre><code>
+Open UCRT64 shell (C:\msys64\ucrt64.exe)
+Run:
+pacman -S --needed ucrt64/mingw-w64-ucrt-x86_64-gcc
+pacman -S --needed ucrt64/mingw-w64-ucrt-x86_64-clang
+pacman -S --needed ucrt64/mingw-w64-ucrt-x86_64-cmake
+pacman -S --needed ucrt64/mingw-w64-ucrt-x86_64-ninja
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Verify</td>
+<td>
+<pre><code>
+Run:
+gcc --version
+clang --version
+cmake --version
+ninja --version
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Environment</td>
+<td>
+<pre><code>
+Add to PATH (CMD only):
+set PATH=C:\msys64\ucrt64\bin;%PATH%
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy uses UCRT64 for:
+- GF engine builds
+- Memory block tools
+- LLM command execution
+CMD only — no PowerShell
+</code></pre>
+</td>
+</tr>
+
+</table>

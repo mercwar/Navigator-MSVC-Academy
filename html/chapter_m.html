@@ -1,0 +1,99 @@
+<!-- AVIS BLOCK
+FILE: chapter_m.html
+PURPOSE: Navigator‑MSVC Academy — Final Validation
+AUTHOR: Demon
+-->
+
+<h2>Chapter M — Final Validation</h2>
+
+<table>
+<tr><th>Step</th><th>Routine</th></tr>
+
+<tr>
+<td>MSVC Test</td>
+<td>
+<pre><code>
+Open CMD → x64 Native Tools Command Prompt
+Run: cl /?
+Output should display MSVC compiler help
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>MSYS2 / UCRT64 Test</td>
+<td>
+<pre><code>
+Open UCRT64 shell
+Run:
+gcc --version
+clang --version
+cmake --version
+ninja --version
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Apache + PHP Test</td>
+<td>
+<pre><code>
+Create C:\Apache24\htdocs\validate.php
+Content:
+<?php echo "Navigator-MSCV Validation OK"; ?>
+Open browser → http://localhost/validate.php
+Output: Navigator-MSCV Validation OK
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Git + GitHub CLI Test</td>
+<td>
+<pre><code>
+Run: git --version
+Run: gh --version
+Clone test repo:
+gh repo clone academy/test-validation
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>WinSCP Test</td>
+<td>
+<pre><code>
+Open WinSCP
+Connect to saved session
+Upload test file validate.txt
+Verify file appears on remote server
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>7-Zip Test</td>
+<td>
+<pre><code>
+Run: 7z a test.zip validate.txt
+Run: 7z l test.zip
+Output should list validate.txt
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy validation confirms:
+- Compiler toolchains operational
+- Apache + PHP serving content
+- GitHub CLI authenticated
+- WinSCP transfers working
+- 7-Zip packaging functional
+</code></pre>
+</td>
+</tr>
+
+</table>

@@ -1,0 +1,99 @@
+<!-- AVIS BLOCK
+FILE: chapter_l.html
+PURPOSE: Navigator‑MSVC Academy — Advanced Integration
+AUTHOR: Demon
+-->
+
+<h2>Chapter L — Advanced Integration</h2>
+
+<table>
+<tr><th>Step</th><th>Routine</th></tr>
+
+<tr>
+<td>Apache + PHP Fusion</td>
+<td>
+<pre><code>
+Edit C:\Apache24\conf\httpd.conf:
+LoadModule php_module "C:/php/php8apache2_4.dll"
+AddHandler application/x-httpd-php .php
+PHPIniDir "C:/php"
+
+Restart Apache:
+httpd.exe -k restart
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>MSVC + MSYS2 Toolchain</td>
+<td>
+<pre><code>
+Open CMD:
+set PATH=C:\msys64\ucrt64\bin;%PATH%
+
+Verify:
+gcc --version
+cl
+cmake --version
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GitHub Repo Linking</td>
+<td>
+<pre><code>
+Run:
+git config --global user.name "Navigator-MSCV"
+git config --global user.email "academy@example.com"
+
+Clone repo:
+git clone https://github.com/academy/firegem.git
+
+Authenticate:
+gh auth login
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>WinSCP Deployment</td>
+<td>
+<pre><code>
+Configure saved session:
+Host: academy-server
+Protocol: SFTP
+Local dir: C:\Projects\Navigator-MSCV
+Remote dir: /var/www/html
+
+Drag-drop build files to server
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>7-Zip Packaging</td>
+<td>
+<pre><code>
+Batch script: PACKAGE.bat
+@echo off
+"C:\Program Files\7-Zip\7z.exe" a build.zip C:\Projects\Navigator-MSCV\*
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy advanced integration ensures:
+- Apache + PHP serve dynamic content
+- MSVC + MSYS2 compile GF builds
+- GitHub CLI manages repos
+- WinSCP deploys builds
+- 7-Zip packages artifacts
+</code></pre>
+</td>
+</tr>
+
+</table>
