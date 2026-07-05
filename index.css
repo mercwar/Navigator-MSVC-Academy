@@ -114,11 +114,7 @@ body {
   transition: transform .25s ease,border-top-color .25s ease;
 }
 
-.dropdown-header.active .dropdown-arrow {
-  transform: rotate(180deg);
-  border-top-color: #7fe4ff;
-}
-
+/* Collapsed by default */
 .dropdown-content {
   max-height: 0;
   overflow: hidden;
@@ -127,14 +123,19 @@ body {
   margin-top: 6px;
 }
 
-.dropdown-inner-scroll {
-  max-height: calc(100vh - 350px);
-  overflow-y: auto;
-  padding-left: 10px;
-  padding-right: 5px;
-  padding-bottom: 6px;
-  background: 0 0!important;
+/* Expanded when active */
+.dropdown-header.active + .dropdown-content {
+  max-height: 250px;   /* or whatever scroll cap you want */
 }
+
+
+.dropdown-inner-scroll {
+  max-height: 250px;        /* scroll area inside dropdown */
+  overflow-y: auto;
+  padding: 10px;
+  background: transparent !important;
+}
+
 
 #sidebar button {
   width: 100%;
