@@ -11,21 +11,32 @@ NOTES: Sidebar fixed in left table cell; content in right cell; dropdowns scroll
 <head>
 <meta charset="UTF-8">
 <title>MercWar Standard C & WinAPI Tutorial</title>
-<link rel="stylesheet" href="index.css?v=49">
-<link rel="stylesheet" href="index1.css?v=51">
-<link rel="stylesheet" href="rru_gx.css?v=43">
+<link rel="stylesheet" href="index.css?v=60">
+<link rel="stylesheet" href="index1.css?v=60">
+<link rel="stylesheet" href="rru_gx.css?v=48">
 </head>
 
 <body>
 
 <!-- MASTER TABLE LAYOUT -->
-<table id="layoutTable" cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+<table id="layoutTable" cellspacing="0" cellpadding="0" border="0">
   <tr>
 
     <!-- SIDEBAR CELL (FIXED WIDTH) -->
-    <td id="sidebarCell" width="280" valign="top">
+    <td id="sidebarCell"  valign="top">
 
       <div id="sidebar">
+
+        <!-- WAREZ DROPDOWN -->
+        <div class="dropdown">
+          <div class="dropdown-header" data-dropdown="cWarez">
+            Mercwar01's Free Dev Warez 
+            <span class="dropdown-arrow"></span>
+          </div>
+          <div id="cWarez" class="dropdown-content">
+            <div class="dropdown-inner-scroll" id="warez-buttons"></div>
+          </div>
+        </div>
 
         <!-- C LANGUAGE DROPDOWN -->
         <div class="dropdown">
@@ -33,17 +44,8 @@ NOTES: Sidebar fixed in left table cell; content in right cell; dropdowns scroll
             Mercwar01's C Language Tutorial
             <span class="dropdown-arrow"></span>
           </div>
-
           <div id="cLang" class="dropdown-content">
-            <div class="dropdown-inner-scroll">
-              <script>
-                document.write(
-                  Array.from({length:20}, (_,i)=>
-                    `<button onclick="loadChapter(${i+1})">Chapter ${i+1}</button>`
-                  ).join("")
-                );
-              </script>
-            </div>
+            <div class="dropdown-inner-scroll" id="clang-buttons"></div>
           </div>
         </div>
 
@@ -53,17 +55,8 @@ NOTES: Sidebar fixed in left table cell; content in right cell; dropdowns scroll
             MercWar WinAPI & DirectX Tutorial
             <span class="dropdown-arrow"></span>
           </div>
-
           <div id="mwNum" class="dropdown-content">
-            <div class="dropdown-inner-scroll">
-              <script>
-                document.write(
-                  Array.from({length:20}, (_,i)=>
-                    `<button onclick="loadChapter(${21+i})">Chapter ${21+i}</button>`
-                  ).join("")
-                );
-              </script>
-            </div>
+            <div class="dropdown-inner-scroll" id="mwNum-buttons"></div>
           </div>
         </div>
 
@@ -73,19 +66,8 @@ NOTES: Sidebar fixed in left table cell; content in right cell; dropdowns scroll
             Havok: Avis & C/CY Framework
             <span class="dropdown-arrow"></span>
           </div>
-
           <div id="mwLet" class="dropdown-content">
-            <div class="dropdown-inner-scroll">
-              <script>
-                const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                let out = "";
-                for (let i=0; i<25; i++) {  // A–Y
-                  const letter = letters[i];
-                  out += `<button onclick="loadChapter('${letter}')">Chapter ${letter}</button>`;
-                }
-                document.write(out);
-              </script>
-            </div>
+            <div class="dropdown-inner-scroll" id="mwLet-buttons"></div>
           </div>
         </div>
 
@@ -95,22 +77,61 @@ NOTES: Sidebar fixed in left table cell; content in right cell; dropdowns scroll
 
     <!-- CONTENT CELL -->
     <td id="contentCell" valign="top">
-<div id="content-bnr">
-<div id="gx-banner">
-  <a href="https://mercwar.github.io/Constellation" target="_top"><span><i>Welcome to Tron's MercWar MSVC Academy, next up-link Constellation Gateway </i></span></a>
-</div>
-</div>
+      <div id="content-bnr">
+        <div id="gx-banner">
+          <a href="https://mercwar.github.io/Constellation" target="_top">
+            <span><i>Welcome to Tron's MercWar MSVC Academy, next up-link Constellation Gateway </i></span>
+          </a>
+        </div>
+      </div>
       <div id="content">
         <h1>MercWar Standard C & WinAPI Tutorial</h1>
         <p>Select a chapter from the sidebar.</p>
       </div>
-
     </td>
 
   </tr>
 </table>
 
-<script src="index.js?v=49"></script>
+<script src="index.js?v=58"></script>
+
+<script>
+// Generate Warez buttons (_A–_Y)
+(() => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const container = document.getElementById("warez-buttons");
+  container.innerHTML = Array.from({length:26}, (_,i) => {
+    const letter = letters[i];
+    return `<button onclick="loadChapter('_${letter}')">Chapter ${letter}</button>`;
+  }).join("");
+})();
+
+// Generate C Language buttons (1–20)
+(() => {
+  const container = document.getElementById("clang-buttons");
+  container.innerHTML = Array.from({length:20}, (_,i) =>
+    `<button onclick="loadChapter(${i+1})">Chapter ${i+1}</button>`
+  ).join("");
+})();
+
+// Generate WinAPI numeric buttons (21–40)
+(() => {
+  const container = document.getElementById("mwNum-buttons");
+  container.innerHTML = Array.from({length:20}, (_,i) =>
+    `<button onclick="loadChapter(${21+i})">Chapter ${21+i}</button>`
+  ).join("");
+})();
+
+// Generate WinAPI letter buttons (A–Y)
+(() => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const container = document.getElementById("mwLet-buttons");
+  container.innerHTML = Array.from({length:25}, (_,i) => {
+    const letter = letters[i];
+    return `<button onclick="loadChapter('${letter}')">Chapter ${letter}</button>`;
+  }).join("");
+})();
+</script>
 
 </body>
 </html>

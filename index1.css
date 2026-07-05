@@ -97,6 +97,7 @@ pre, td, th, #content td, #content th {
 #content td {
   font-size: 0.8rem;
   white-space: normal !important;
+  
 }
 
 #content tr:first-child th {
@@ -131,12 +132,15 @@ pre, td, th, #content td, #content th {
 
 /* --- Layout Components --- */
 #contentCell {
+  display: table-cell;          /* ◄ Force standard table cell behavior */
+  vertical-align: top;
   height: 100vh;
-  width: 100vh;
-  overflow: hidden;
+  width: 800px !important;       /* ◄ Tells the browser to fill every remaining pixel */
+  box-sizing: border-box;
+align-items:left;
   background-image: url(MWCT-BG.png?v=1);
   background-repeat: no-repeat;
-  background-position: top center;
+  background-position: top left;
   background-size: cover;
   background-attachment: scroll;
 }
@@ -146,10 +150,9 @@ pre, td, th, #content td, #content th {
   height: 355px;
   background-image: url(msvc-new1.png?v=1);
   background-repeat: no-repeat;
-  background-position: top center;
+  background-position: top left;
   background-size: cover;
 }
-
 #content {
   width: 100%;
   height: 100vh;
@@ -160,6 +163,8 @@ pre, td, th, #content td, #content th {
   background: transparent !important;
   box-sizing: border-box;
 }
+
+
 
 hr, #content hr {
   border: 0;
@@ -209,4 +214,13 @@ hr, #content hr {
 @keyframes flashBorder {
   0% { outline: 1px solid rgba(0, 229, 255, 1); } /* Flashes Ice Blue */
   100% { outline: 1px solid rgba(0, 229, 255, 0); }
+}
+
+/* Explicitly size the columns inside the layout table */
+#layoutTable td#sidebarCell {
+  width: 280px !important;
+}
+
+#layoutTable td#contentCell {
+  width: auto !important; /* Forces it to fill 100% of the remaining room */
 }

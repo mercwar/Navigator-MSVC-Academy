@@ -45,10 +45,22 @@ function loadChapter(id) {
   }
 
   if (typeof id === "number") {
+    // Numeric → chapter01.html, chapter02.html
     file = "html/chapter" + String(id).padStart(2, "0") + ".html";
   } else {
-    const letter = String(id).trim().toUpperCase();
-    file = "html/chapter" + letter + ".html";
+    const str = String(id).trim().toUpperCase();
+
+    if (/^_[A-Z]$/.test(str)) {
+      // Underscore + letter → chapter_A.html
+      const letter = str.substring(1); // drop underscore
+      file = "html/chapter_" + letter + ".html";
+    } else if (/^[A-Z]$/.test(str)) {
+      // Single letter → chapterA.html
+      file = "html/chapter" + str + ".html";
+    } else {
+      // Fallback → treat as raw string
+      file = "html/chapter" + str + ".html";
+    }
   }
 
   fetch(file)
@@ -67,9 +79,8 @@ function loadChapter(id) {
       // 🔥 Auto scroll the content cell back to top
       const contentCell = document.getElementById("content");
       if (contentCell) {
-        contentCell.scrollTop = 0; // reset scroll position
+        contentCell.scrollTop = 0;
       }
-      // Also scroll the whole window if needed
       window.scrollTo({ top: 0, behavior: "smooth" });
     })
     .catch(err => {

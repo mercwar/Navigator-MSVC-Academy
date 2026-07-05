@@ -1,8 +1,10 @@
-body,html {
+/* Allow body to grow with content */
+html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;       /* instead of fixed height */
+  overflow: hidden;     /* prevent horizontal scroll only */
+
 }
 
 body {
@@ -30,28 +32,49 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #ffffff59;
 }
+#sidebar {
+  width: 100%;
+  box-sizing: border-box;
+}
 
 #layoutTable,table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* Lock the table layout so widths don’t flex */
 #layoutTable {
-  height: 100%;
-  table-layout: fixed;
+
+  width: 100%;          /* full page width */
+  height: 100vh;        /* full viewport height */
+  border-collapse: collapse;
 }
 
-#sidebar {
-  height: 100%;
-  overflow: hidden;
-  padding-top: 1px;
-  padding-right: 16px;
-  padding-left: 8px;
+/* Sidebar cell locked to viewport height and fixed width */
+/* Sidebar cell locked to fixed width and viewport height */
+#sidebarCell {
+  display: table-cell; 
+  width: 280px;               /* fixed sidebar width */
+  min-width: 280px;
+  max-width: 280px;
+
+  height: 100vh;              /* full viewport height */
+  overflow-y: auto;           /* scroll if content exceeds */
+
+  /* Background image settings */
+  background-image: url(side-bar.png?v=2);
+  background-repeat: no-repeat;
+  background-position: top left;
+
+  /* 🔒 Force exact fit to sidebar cell */
+  background-size: 100% 100vh;   /* lock to 260px width and full viewport height */
+  background-attachment: local;   /* background scrolls with the cell */
 }
+
 
 .dropdown {
   margin-bottom: 1px;
-  margin-right: 5px;
+  margin-right: 20px;
   margin-left: 20px;
 }
 
@@ -105,7 +128,7 @@ body {
 }
 
 .dropdown-inner-scroll {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 350px);
   overflow-y: auto;
   padding-left: 10px;
   padding-right: 5px;
@@ -140,21 +163,11 @@ body {
 
 
 
-#sidebarCell {
-  width: 260px;              /* FIXED WIDTH */
-  min-width: 260px;          /* NEVER SHRINK */
-  max-width: 260px;          /* NEVER GROW */
 
-  height: 100%;              /* auto height */
-  overflow: hidden;
 
-  background-image: url(side-bar.png?v=2);
-  background-repeat: no-repeat;
-  background-position: top left;
 
-  /* CRITICAL: prevents width expansion when height shrinks */
-  background-size: 100% 100%;
+/* Content cells should expand naturally */
+.layoutTable, .contentCell {
+  height: auto;                   /* remove calc() constraint */
+  min-height: 100vh;              /* ensure full viewport coverage */
 }
-
-
-
