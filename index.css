@@ -2,9 +2,10 @@
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100%;       /* instead of fixed height */
-  overflow: visble;     /* prevent horizontal scroll only */
-
+  height: auto;          /* let body grow naturally */
+  min-height: 100%;      /* ensure full coverage */
+  overflow-x: hidden;    /* only block horizontal scroll */
+  overflow-y: auto;      /* allow vertical scroll */
 }
 
 body {
