@@ -3,7 +3,7 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;       /* instead of fixed height */
-  overflow: hidden;     /* prevent horizontal scroll only */
+  overflow: visble;     /* prevent horizontal scroll only */
 
 }
 
@@ -62,7 +62,7 @@ body {
   overflow-y: auto;           /* scroll if content exceeds */
 
   /* Background image settings */
-  background-image: url(side-bar.png?v=4);
+  background-image: url(side-bar.png?v=5);
   background-repeat: no-repeat;
   background-position: top left;
 
@@ -171,4 +171,39 @@ body {
 .layoutTable, .contentCell {
   height: auto;                   /* remove calc() constraint */
   min-height: 100vh;              /* ensure full viewport coverage */
+}
+
+
+/* Category indicators */
+.dropdown-header.active {
+  border-color: #4fd1ff;
+  box-shadow: 0 0 12px #4fd1ff59;
+  position: relative;
+}
+
+.dropdown-header.active::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #ffcb05, #00ff66); /* Gold → Green */
+  border-radius: 2px;
+}
+
+/* Item indicators */
+#sidebar button.active {
+  border-color: #ffcb05 !important; /* Gold highlight */
+  background: #222833 !important;
+  box-shadow: 0 0 8px #ffcb0559;
+}
+
+#sidebar button.active::before {
+  content: "✔️";
+  position: absolute;
+ padding-left:180px;
+  left: 6px;
+  color: #ffcb05;
+  font-size: 0.8rem;
 }

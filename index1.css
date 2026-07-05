@@ -132,18 +132,21 @@ pre, td, th, #content td, #content th {
 
 /* --- Layout Components --- */
 #contentCell {
-  display: table-cell;          /* ◄ Force standard table cell behavior */
+  display: block;               /* ◄ Changed from table-cell to allow normal document flow */
   vertical-align: top;
-  height: 100vh;
-  width: 800px !important;       /* ◄ Tells the browser to fill every remaining pixel */
+  height: auto;
+  min-height: 100%;             /* ◄ Forces the cell to stretch to the bottom */
+  width: 800px !important;       
   box-sizing: border-box;
-align-items:left;
+  text-align: left;             /* ◄ 'align-items' only works on Flexbox; use text-align here */
   background-image: url(MWCT-BG.png?v=1);
   background-repeat: no-repeat;
   background-position: top left;
   background-size: cover;
   background-attachment: scroll;
+  padding-bottom: 40px;         /* ◄ Adds breathing room at the bottom so it isn't flush */
 }
+
 
 #content-bnr {
   width: 100%;
@@ -223,4 +226,38 @@ hr, #content hr {
 
 #layoutTable td#contentCell {
   width: auto !important; /* Forces it to fill 100% of the remaining room */
+}
+/* --- Floating Scroll Pin Button --- */
+#scrollPinBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: rgba(8, 13, 20, 0.85) !important;
+  border: 1px solid #ffe066 !important; /* Premium Gold */
+  color: #ffe066 !important;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 224, 102, 0.3);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#scrollPinBtn:hover {
+  border-color: #00e5ff !important; /* Ice Blue Hover */
+  color: #00e5ff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 229, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Class injected by JavaScript to freeze the page viewport */
+.body-scroll-locked {
+  overflow: hidden !important;
 }

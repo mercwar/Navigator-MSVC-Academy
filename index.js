@@ -5,6 +5,53 @@ PURPOSE: MercWar Standard C & WinAPI Tutorial - Fancy Sidebar Logic + Indicators
 AUTHOR: Demon
 NOTES: Dropdown animation, arrow indicators, chapter loading, letter-safe loader
 */
+// Global states to track position and lock configuration
+let isScrollPinned = false;
+let pinnedScrollPosition = 0;
+
+function toggleScrollPin() {
+  const icon = document.getElementById("scrollPinIcon");
+  const text = document.getElementById("scrollPinText");
+  const btn = document.getElementById("scrollPinBtn");
+
+  isScrollPinned = !isScrollPinned;
+
+  if (isScrollPinned) {
+    // 🔥 Capture immediately
+    pinnedScrollPosition = window.scrollY;
+
+    // Lock body scroll
+    document.body.style.overflow = "hidden";
+
+    // Update UI
+    icon.textContent = "🔒";
+    text.textContent = "Pinned";
+    btn.style.borderColor = "#ff6a00";
+  } else {
+    // Unlock body scroll
+    document.body.style.overflow = "auto";
+
+    // Update UI
+    icon.textContent = "🔓";
+    text.textContent = "Unpinned";
+    btn.style.borderColor = "#ffe066";
+  }
+}
+function handleFrameLoadScroll() {
+  if (isScrollPinned) {
+  
+
+    // Delay the scroll restore so the DOM has time to render
+    setTimeout(() => {
+      window.scrollTo({ top: pinnedScrollPosition, behavior: "instant" });
+    
+    }, 150); // 150ms delay, adjust as needed
+  }
+}
+
+
+
+
 
 /* DROPDOWN TOGGLER WITH INDICATORS */
 function toggleDropdown(id) {
@@ -80,6 +127,7 @@ function loadChapter(id) {
       const contentCell = document.getElementById("content");
       if (contentCell) {
         contentCell.scrollTop = 0;
+		handleFrameLoadScroll();
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
     })
@@ -163,4 +211,18 @@ if (headerRow) {
       }
     });
   });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Toggle category active state
+
+  // Highlight selected item
+  document.querySelectorAll("#sidebar button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#sidebar button.active")
+        .forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
 });
