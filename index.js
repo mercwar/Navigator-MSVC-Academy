@@ -48,9 +48,9 @@ function loadChapter(id) {
     // Numeric → chapter01.html, chapter02.html
     file = "html/chapter" + String(id).padStart(2, "0") + ".html";
   } else {
-    const str = String(id).trim().toUpperCase();
+    const str = id;
 
-    if (/^_[A-Z]$/.test(str)) {
+    if (/^_[a-z]$/.test(str)) {
       // Underscore + letter → chapter_A.html
       const letter = str.substring(1); // drop underscore
       file = "html/chapter_" + letter + ".html";
