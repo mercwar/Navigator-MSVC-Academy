@@ -1,0 +1,255 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter28.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 28 (Multimedia APIs)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 28 — Multimedia APIs: Audio, MIDI & Video</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>MMSystem Overview</td>
+    <td>
+      Windows multimedia APIs (MMSystem) provide:
+      <ul>
+        <li>Audio playback (waveOut)</li>
+        <li>Audio recording (waveIn)</li>
+        <li>MIDI output</li>
+        <li>MCI (Media Control Interface) for video</li>
+        <li>Timers with millisecond precision</li>
+      </ul>
+
+      Header:
+      <pre><code>
+#include &lt;mmsystem.h&gt;
+#pragma comment(lib, "winmm.lib")
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- WAVEOUT -->
+  <tr>
+    <td>Playing Audio with waveOut</td>
+    <td>
+      Step 1 — Define audio format:
+      <pre><code>
+WAVEFORMATEX wf = {0};
+wf.wFormatTag = WAVE_FORMAT_PCM;
+wf.nChannels = 1;
+wf.nSamplesPerSec = 44100;
+wf.wBitsPerSample = 16;
+wf.nBlockAlign = wf.nChannels * wf.wBitsPerSample / 8;
+wf.nAvgBytesPerSec = wf.nSamplesPerSec * wf.nBlockAlign;
+      </code></pre>
+
+      Step 2 — Open device:
+      <pre><code>
+HWAVEOUT hWave;
+waveOutOpen(&hWave, WAVE_MAPPER, &wf, 0, 0, CALLBACK_NULL);
+      </code></pre>
+
+      Step 3 — Prepare buffer:
+      <pre><code>
+short samples[44100]; // 1 second mono
+// fill samples with audio data
+
+WAVEHDR hdr = {0};
+hdr.lpData = (LPSTR)samples;
+hdr.dwBufferLength = sizeof(samples);
+
+waveOutPrepareHeader(hWave, &hdr, sizeof(hdr));
+waveOutWrite(hWave, &hdr, sizeof(hdr));
+      </code></pre>
+
+      Step 4 — Cleanup:
+      <pre><code>
+waveOutUnprepareHeader(hWave, &hdr, sizeof(hdr));
+waveOutClose(hWave);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- WAVEIN -->
+  <tr>
+    <td>Recording Audio with waveIn</td>
+    <td>
+      <pre><code>
+HWAVEIN hIn;
+waveInOpen(&hIn, WAVE_MAPPER, &wf, 0, 0, CALLBACK_NULL);
+
+WAVEHDR hdr = {0};
+hdr.lpData = (LPSTR)samples;
+hdr.dwBufferLength = sizeof(samples);
+
+waveInPrepareHeader(hIn, &hdr, sizeof(hdr));
+waveInAddBuffer(hIn, &hdr, sizeof(hdr));
+
+waveInStart(hIn);
+      </code></pre>
+
+      Recording stops with:
+      <pre><code>
+waveInStop(hIn);
+waveInUnprepareHeader(hIn, &hdr, sizeof(hdr));
+waveInClose(hIn);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MIDI -->
+  <tr>
+    <td>MIDI Output</td>
+    <td>
+      Open MIDI device:
+      <pre><code>
+HMIDIOUT hMidi;
+midiOutOpen(&hMidi, 0, 0, 0, CALLBACK_NULL);
+      </code></pre>
+
+      Play a note:
+      <pre><code>
+// MIDI message: 0x90 = Note On, channel 0
+DWORD msg = 0x007F3C90; // note 60 (middle C), velocity 127
+midiOutShortMsg(hMidi, msg);
+      </code></pre>
+
+      Stop note:
+      <pre><code>
+DWORD off = 0x003C80; // Note Off
+midiOutShortMsg(hMidi, off);
+      </code></pre>
+
+      Close:
+      <pre><code>
+midiOutClose(hMidi);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MCI VIDEO -->
+  <tr>
+    <td>Playing Video with MCI</td>
+    <td>
+      MCI (Media Control Interface) plays audio/video using simple commands.
+
+      Open video:
+      <pre><code>
+mciSendString("open \"video.mp4\" type mpegvideo alias vid", NULL, 0, NULL);
+      </code></pre>
+
+      Play:
+      <pre><code>
+mciSendString("play vid", NULL, 0, NULL);
+      </code></pre>
+
+      Stop:
+      <pre><code>
+mciSendString("stop vid", NULL, 0, NULL);
+      </code></pre>
+
+      Close:
+      <pre><code>
+mciSendString("close vid", NULL, 0, NULL);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MCI WINDOW -->
+  <tr>
+    <td>Playing Video Inside a Window</td>
+    <td>
+      <pre><code>
+char cmd[256];
+sprintf(cmd, "play vid window %u", hwnd);
+mciSendString(cmd, NULL, 0, NULL);
+      </code></pre>
+
+      Resize video:
+      <pre><code>
+sprintf(cmd, "put vid window at 0 0 640 480");
+mciSendString(cmd, NULL, 0, NULL);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- TIMERS -->
+  <tr>
+    <td>Multimedia Timers</td>
+    <td>
+      Multimedia timers offer higher precision than SetTimer.
+
+      <pre><code>
+timeBeginPeriod(1); // 1ms resolution
+
+UINT id = timeSetEvent(
+    10, 1,        // 10ms interval
+    TimerProc,    // callback
+    0,
+    TIME_PERIODIC
+);
+      </code></pre>
+
+      Callback:
+      <pre><code>
+void CALLBACK TimerProc(UINT id, UINT msg,
+                        DWORD user, DWORD p1, DWORD p2)
+{
+    // high‑precision tick
+}
+      </code></pre>
+
+      Stop:
+      <pre><code>
+timeKillEvent(id);
+timeEndPeriod(1);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL PROGRAM -->
+  <tr>
+    <td>Full Audio + MIDI + Video Example</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+#include &lt;mmsystem.h&gt;
+#pragma comment(lib, "winmm.lib")
+
+int main(void)
+{
+    // Play MIDI note
+    HMIDIOUT hMidi;
+    midiOutOpen(&hMidi, 0, 0, 0, CALLBACK_NULL);
+    midiOutShortMsg(hMidi, 0x007F3C90); // Note On
+    Sleep(500);
+    midiOutShortMsg(hMidi, 0x003C80);   // Note Off
+    midiOutClose(hMidi);
+
+    // Play video
+    mciSendString("open \"video.mp4\" type mpegvideo alias vid", NULL, 0, NULL);
+    mciSendString("play vid", NULL, 0, NULL);
+    Sleep(3000);
+    mciSendString("close vid", NULL, 0, NULL);
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 29 introduces **DirectX fundamentals — Direct2D, DirectWrite, and hardware‑accelerated rendering**.
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,116 @@
+<!-- AVIS BLOCK
+FILE: chapter_n.html
+PURPOSE: Navigator‑MSVC Academy — Troubleshooting Guide
+AUTHOR: Demon
+-->
+
+<h2>Chapter N — Troubleshooting</h2>
+
+<table>
+<tr><th>Issue</th><th>Routine</th></tr>
+
+<tr>
+<td>MSVC Compiler Not Found</td>
+<td>
+<pre><code>
+Symptom: 'cl' not recognized
+Fix:
+- Open "x64 Native Tools Command Prompt"
+- Ensure PATH includes MSVC bin
+- Reinstall Build Tools workload
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>MSYS2 Update Loop</td>
+<td>
+<pre><code>
+Symptom: pacman repeatedly asks to update
+Fix:
+- Run: pacman -Syu
+- Close shell → reopen
+- Run: pacman -Su
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Apache Fails to Start</td>
+<td>
+<pre><code>
+Symptom: httpd.exe exits immediately
+Fix:
+- Run: httpd -t → check syntax
+- Verify Listen port not in use
+- Check logs: C:\Apache24\logs\error.log
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>PHP Not Loading</td>
+<td>
+<pre><code>
+Symptom: .php files download instead of execute
+Fix:
+- Ensure php_module DLL path correct in httpd.conf
+- Verify PHPIniDir points to C:\php
+- Restart Apache
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>WinSCP Connection Error</td>
+<td>
+<pre><code>
+Symptom: Cannot connect to server
+Fix:
+- Verify hostname/IP
+- Check firewall/port (22 for SFTP, 21 for FTP)
+- Test with PuTTY or ssh
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>7-Zip Command Not Found</td>
+<td>
+<pre><code>
+Symptom: '7z' not recognized
+Fix:
+- Add C:\Program Files\7-Zip to PATH
+- Verify installation directory
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GitHub CLI Auth Failure</td>
+<td>
+<pre><code>
+Symptom: gh auth login fails
+Fix:
+- Use browser authentication
+- Ensure token has repo scope
+- Run: gh auth status
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy troubleshooting relies on:
+- CMD logs
+- Apache error.log
+- PHP info.php
+- GitHub CLI status
+CMD only — no PowerShell
+</code></pre>
+</td>
+</tr>
+
+</table>

@@ -1,0 +1,212 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter14.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 14 (Creating a WinAPI Window)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 14 — Creating Your First WinAPI Window</h2>
+
+<table>
+  <tr>
+    <th>Component</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>Overview</td>
+    <td>
+      This chapter builds a complete WinAPI window from scratch.  
+      You will learn:
+      <ul>
+        <li>Registering a window class</li>
+        <li>Creating a window</li>
+        <li>Showing and updating the window</li>
+        <li>Handling basic messages</li>
+        <li>Painting text using GDI</li>
+      </ul>
+      This is the foundation of all future WinAPI development.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 1 — Include WinAPI</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+      </code></pre>
+      This header gives access to all core WinAPI functions.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 2 — Window Procedure</td>
+    <td>
+      <pre><code>
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
+                         WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+            TextOut(hdc, 10, 10, "Hello WinAPI!", 13);
+            EndPaint(hwnd, &ps);
+            return 0;
+        }
+
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+      </code></pre>
+      <strong>WndProc</strong> handles all window messages.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 3 — Register Window Class</td>
+    <td>
+      <pre><code>
+WNDCLASSEX wc = {0};
+wc.cbSize        = sizeof(WNDCLASSEX);
+wc.lpfnWndProc   = WndProc;
+wc.hInstance     = hInstance;
+wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+wc.lpszClassName = "DemoWindow";
+
+RegisterClassEx(&wc);
+      </code></pre>
+      This defines the window’s behavior and appearance.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 4 — Create the Window</td>
+    <td>
+      <pre><code>
+HWND hwnd = CreateWindowEx(
+    0,
+    "DemoWindow",
+    "My First WinAPI Window",
+    WS_OVERLAPPEDWINDOW,
+    CW_USEDEFAULT, CW_USEDEFAULT,
+    800, 600,
+    NULL, NULL,
+    hInstance,
+    NULL
+);
+      </code></pre>
+      <strong>WS_OVERLAPPEDWINDOW</strong> gives a standard window frame.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 5 — Show the Window</td>
+    <td>
+      <pre><code>
+ShowWindow(hwnd, nCmdShow);
+UpdateWindow(hwnd);
+      </code></pre>
+      These make the window visible and trigger initial painting.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Step 6 — Message Loop</td>
+    <td>
+      <pre><code>
+MSG msg;
+
+while (GetMessage(&msg, NULL, 0, 0)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+}
+      </code></pre>
+      This loop keeps your application running.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Full Program</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
+                         WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+            TextOut(hdc, 10, 10, "Hello WinAPI!", 13);
+            EndPaint(hwnd, &ps);
+            return 0;
+        }
+
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance,
+                   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    WNDCLASSEX wc = {0};
+    wc.cbSize        = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc   = WndProc;
+    wc.hInstance     = hInstance;
+    wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+    wc.lpszClassName = "DemoWindow";
+
+    RegisterClassEx(&wc);
+
+    HWND hwnd = CreateWindowEx(
+        0,
+        "DemoWindow",
+        "My First WinAPI Window",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        800, 600,
+        NULL, NULL,
+        hInstance,
+        NULL
+    );
+
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 15 introduces GDI drawing — lines, shapes, colors, brushes, pens, and custom rendering.
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,57 @@
+<!-- AVIS BLOCK
+FILE: chapterX.html
+PURPOSE: CYHY DX Stability Matrix — GPU Faults, Latency, Pipeline Health
+AUTHOR: Demon
+-->
+
+<h2>Chapter X — CYHY DX Stability Matrix: GPU Faults, Latency, Pipeline Health</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Stability Matrix</td>
+<td>
+<pre><code>
+struct CYHY_MATRIX {
+    bool deviceLost;
+    bool swapHealthy;
+    float gpuLatency;
+    float presentLatency;
+    float pipelineHealth[3];
+};
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Pipeline Health Scan</td>
+<td>
+<pre><code>
+matrix.pipelineHealth[PIPE_D2D]   = MERCG_TestD2D(dx);
+matrix.pipelineHealth[PIPE_DWRITE]= MERCG_TestDWrite(dx);
+matrix.pipelineHealth[PIPE_D3D]   = MERCG_TestD3D(dx);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Latency Sampling</td>
+<td>
+<pre><code>
+matrix.presentLatency = MERCG_GetPresentLatency(dx);
+matrix.gpuLatency     = MERCG_GetGPULatency(dx);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>AVIS Stability Injection</td>
+<td>
+<pre><code>
+avis.cyhy->matrix = matrix;
+</code></pre>
+</td>
+</tr>
+
+</table>

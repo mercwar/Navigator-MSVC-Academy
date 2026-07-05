@@ -1,0 +1,99 @@
+<!-- AVIS BLOCK
+FILE: chapter_u.html
+PURPOSE: Navigator‑MSVC Academy — Unified Workflow Guide
+AUTHOR: Demon
+-->
+
+<h2>Chapter U — Academy Workflow</h2>
+
+<table>
+<tr><th>Stage</th><th>Routine</th></tr>
+
+<tr>
+<td>Build Stage</td>
+<td>
+<pre><code>
+Run BUILD.bat
+- Compiles source with MSVC
+- Outputs app.exe to build directory
+Logs stored in build.log
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Package Stage</td>
+<td>
+<pre><code>
+Run PACKAGE.bat
+- Compresses build directory into release.zip
+- Stores package in release folder
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Deploy Stage</td>
+<td>
+<pre><code>
+Run DEPLOY.bat
+- Syncs local project with remote server via WinSCP
+- Updates Apache htdocs
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Validation Stage</td>
+<td>
+<pre><code>
+Open browser → http://localhost/test.php
+Output: Navigator-MSCV OK
+Check remote server for deployed files
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Monitoring Stage</td>
+<td>
+<pre><code>
+Daily:
+- Review Apache error.log
+- Review php_errors.log
+- Check build.log for warnings
+Weekly:
+- Run systeminfo + tasklist
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Automation Stage</td>
+<td>
+<pre><code>
+Schedule tasks with Task Scheduler:
+- BUILD.bat daily at 9 AM
+- PACKAGE.bat weekly Sunday
+- DEPLOY.bat after successful build
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy workflow ensures:
+- Builds compiled
+- Packages created
+- Deployments synchronized
+- Validation confirmed
+- Monitoring continuous
+- Automation scheduled
+CMD only — no PowerShell
+</code></pre>
+</td>
+</tr>
+
+</table>

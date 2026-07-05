@@ -1,0 +1,238 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter36.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 36 (Physics Engine Basics)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 36 — Physics: Rigid Bodies, Collisions, Forces & Simulation Loops</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>Physics Engine Overview</td>
+    <td>
+      A physics engine simulates motion using:
+      <ul>
+        <li>Rigid bodies</li>
+        <li>Forces (gravity, drag, impulses)</li>
+        <li>Collision detection</li>
+        <li>Collision response</li>
+        <li>Integration (Euler, RK4)</li>
+      </ul>
+
+      Real‑time physics runs every frame (60–240 FPS).
+    </td>
+  </tr>
+
+  <!-- RIGID BODY -->
+  <tr>
+    <td>Rigid Body Structure</td>
+    <td>
+      <pre><code>
+struct RigidBody {
+    XMFLOAT3 pos;
+    XMFLOAT3 vel;
+    XMFLOAT3 acc;
+    float mass;
+    bool isStatic;
+};
+      </code></pre>
+
+      Update rule:
+      <pre><code>
+vel += acc * dt;
+pos += vel * dt;
+acc = {0,0,0};
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FORCES -->
+  <tr>
+    <td>Applying Forces</td>
+    <td>
+      <pre><code>
+void ApplyForce(RigidBody &rb, XMFLOAT3 f)
+{
+    if (!rb.isStatic)
+        rb.acc.x += f.x / rb.mass,
+        rb.acc.y += f.y / rb.mass,
+        rb.acc.z += f.z / rb.mass;
+}
+      </code></pre>
+
+      Gravity:
+      <pre><code>
+ApplyForce(rb, {0, -9.8f * rb.mass, 0});
+      </code></pre>
+
+      Drag:
+      <pre><code>
+rb.vel *= 0.99f;
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- COLLISION DETECTION -->
+  <tr>
+    <td>Collision Detection (AABB)</td>
+    <td>
+      Axis‑aligned bounding box:
+      <pre><code>
+struct AABB {
+    XMFLOAT3 min;
+    XMFLOAT3 max;
+};
+
+bool Intersect(const AABB &a, const AABB &b)
+{
+    return (a.min.x <= b.max.x && a.max.x >= b.min.x) &&
+           (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+           (a.min.z <= b.max.z && a.max.z >= b.min.z);
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- COLLISION RESPONSE -->
+  <tr>
+    <td>Collision Response</td>
+    <td>
+      Simple bounce:
+      <pre><code>
+rb.vel = rb.vel * -0.5f;
+      </code></pre>
+
+      Position correction:
+      <pre><code>
+rb.pos.y = groundY;
+      </code></pre>
+
+      Impulse‑based:
+      <pre><code>
+float j = -(1 + restitution) * dot(vRel, normal)
+          / (1/rbA.mass + 1/rbB.mass);
+
+rbA.vel += normal * ( j / rbA.mass );
+rbB.vel -= normal * ( j / rbB.mass );
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- INTEGRATION -->
+  <tr>
+    <td>Integration Methods</td>
+    <td>
+      Euler:
+      <pre><code>
+vel += acc * dt;
+pos += vel * dt;
+      </code></pre>
+
+      Semi‑implicit Euler:
+      <pre><code>
+vel += acc * dt;
+pos += vel * dt;
+      </code></pre>
+
+      RK4 (high precision):
+      <pre><code>
+// omitted for brevity
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- SIMULATION LOOP -->
+  <tr>
+    <td>Real‑Time Simulation Loop</td>
+    <td>
+      <pre><code>
+while (running) {
+    float dt = GetDeltaTime();
+
+    // 1. Apply forces
+    for (auto &rb : bodies)
+        ApplyForce(rb, gravity);
+
+    // 2. Integrate
+    for (auto &rb : bodies)
+        Integrate(rb, dt);
+
+    // 3. Collisions
+    for (auto &a : bodies)
+        for (auto &b : bodies)
+            if (&a != &b && Intersect(a.box, b.box))
+                ResolveCollision(a, b);
+
+    // 4. Render
+    RenderScene();
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- SPHERE COLLISION -->
+  <tr>
+    <td>Sphere Collision</td>
+    <td>
+      <pre><code>
+bool SphereHit(XMFLOAT3 a, float ra,
+               XMFLOAT3 b, float rb)
+{
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    float dz = a.z - b.z;
+    float dist2 = dx*dx + dy*dy + dz*dz;
+    float r = ra + rb;
+    return dist2 <= r*r;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- PLANE COLLISION -->
+  <tr>
+    <td>Plane Collision</td>
+    <td>
+      <pre><code>
+float d = dot(rb.pos, planeNormal) + planeOffset;
+
+if (d < 0) {
+    rb.pos -= planeNormal * d;
+    rb.vel -= planeNormal * dot(rb.vel, planeNormal);
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL ENGINE -->
+  <tr>
+    <td>Full Physics Engine Summary</td>
+    <td>
+      <pre><code>
+// Physics tick
+ApplyForces();
+IntegrateBodies(dt);
+DetectCollisions();
+ResolveCollisions();
+UpdateTransforms();
+Render();
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 37 introduces **AI systems — pathfinding, steering behaviors, decision trees, and state machines**.
+    </td>
+  </tr>
+
+</table>

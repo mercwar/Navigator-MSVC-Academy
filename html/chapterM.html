@@ -1,0 +1,65 @@
+<!-- AVIS BLOCK
+FILE: chapterM.html
+PURPOSE: CYBORG Command Vector → DirectX GPU Pipeline
+AUTHOR: Demon
+-->
+
+<h2>Chapter M — CYBORG Command Vector → DirectX GPU Pipeline</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Command Vector</td>
+<td>
+CYBORG emits GPU‑routable commands:
+<pre><code>
+struct CY_CMD {
+    int type;
+    void *payload;
+    uint64_t timestamp;
+};
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GPU Pipeline Routing</td>
+<td>
+<pre><code>
+void CYBORG_RouteToGPU(const CY_CMD &cmd)
+{
+    DXVector *dx = avis.fusion.dx;
+    MERCG_GPUDispatch(dx,cmd);
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GPU Dispatch Table</td>
+<td>
+<pre><code>
+switch(cmd.type){
+    case CMD_TRIANGLE: MERCG_DrawTriangle(dx,payload); break;
+    case CMD_TEXTURE:  MERCG_BindTexture(dx,payload); break;
+    case CMD_SHADER:   MERCG_SetShader(dx,payload); break;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>LLM → GPU Safety</td>
+<td>
+AVIS ensures:
+<ul>
+<li>DX device valid</li>
+<li>Swap chain ready</li>
+<li>No device lost</li>
+<li>No invalid COM pointers</li>
+</ul>
+</td>
+</tr>
+
+</table>

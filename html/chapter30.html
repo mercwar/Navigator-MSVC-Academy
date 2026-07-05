@@ -1,0 +1,329 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter30.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 30 (Direct3D Basics)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 30 — Direct3D Basics: Device, Swap Chain, Shaders & GPU Pipeline</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>What is Direct3D?</td>
+    <td>
+      Direct3D is the **GPU‑accelerated 3D graphics API** in DirectX.  
+      It provides:
+      <ul>
+        <li>Hardware rendering</li>
+        <li>Vertex & pixel shaders</li>
+        <li>3D pipelines</li>
+        <li>Swap chains</li>
+        <li>Buffers & textures</li>
+      </ul>
+
+      Direct3D is used for:
+      <ul>
+        <li>Games</li>
+        <li>3D visualization</li>
+        <li>High‑performance rendering</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- INCLUDE -->
+  <tr>
+    <td>Headers & Libraries</td>
+    <td>
+      <pre><code>
+#include &lt;d3d11.h&gt;
+#pragma comment(lib, "d3d11.lib")
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- DEVICE CREATION -->
+  <tr>
+    <td>Creating the Direct3D Device</td>
+    <td>
+      <pre><code>
+ID3D11Device *device = NULL;
+ID3D11DeviceContext *context = NULL;
+
+D3D11CreateDevice(
+    NULL,
+    D3D_DRIVER_TYPE_HARDWARE,
+    NULL,
+    0,
+    NULL,
+    0,
+    D3D11_SDK_VERSION,
+    &device,
+    NULL,
+    &context
+);
+      </code></pre>
+
+      The device represents the GPU.  
+      The context issues rendering commands.
+    </td>
+  </tr>
+
+  <!-- SWAP CHAIN -->
+  <tr>
+    <td>Creating the Swap Chain</td>
+    <td>
+      <pre><code>
+IDXGISwapChain *swap = NULL;
+
+DXGI_SWAP_CHAIN_DESC sd = {0};
+sd.BufferCount = 1;
+sd.BufferDesc.Width = width;
+sd.BufferDesc.Height = height;
+sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+sd.OutputWindow = hwnd;
+sd.SampleDesc.Count = 1;
+sd.Windowed = TRUE;
+
+IDXGIDevice *dxgiDevice;
+device->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+
+IDXGIAdapter *adapter;
+dxgiDevice->GetAdapter(&adapter);
+
+IDXGIFactory *factory;
+adapter->GetParent(__uuidof(IDXGIFactory), (void**)&factory);
+
+factory->CreateSwapChain(device, &sd, &swap);
+      </code></pre>
+
+      The swap chain handles presenting frames to the screen.
+    </td>
+  </tr>
+
+  <!-- RENDER TARGET -->
+  <tr>
+    <td>Render Target View</td>
+    <td>
+      <pre><code>
+ID3D11RenderTargetView *rtv = NULL;
+
+ID3D11Texture2D *backBuffer;
+swap->GetBuffer(0, __uuidof(ID3D11Texture2D),
+                (void**)&backBuffer);
+
+device->CreateRenderTargetView(backBuffer, NULL, &rtv);
+backBuffer->Release();
+
+context->OMSetRenderTargets(1, &rtv, NULL);
+      </code></pre>
+
+      This is where drawing happens.
+    </td>
+  </tr>
+
+  <!-- VIEWPORT -->
+  <tr>
+    <td>Viewport</td>
+    <td>
+      <pre><code>
+D3D11_VIEWPORT vp;
+vp.Width = width;
+vp.Height = height;
+vp.MinDepth = 0.0f;
+vp.MaxDepth = 1.0f;
+vp.TopLeftX = 0;
+vp.TopLeftY = 0;
+
+context->RSSetViewports(1, &vp);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- CLEAR -->
+  <tr>
+    <td>Clearing the Screen</td>
+    <td>
+      <pre><code>
+float color[4] = { 0.2f, 0.4f, 0.6f, 1.0f };
+context->ClearRenderTargetView(rtv, color);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- PRESENT -->
+  <tr>
+    <td>Presenting the Frame</td>
+    <td>
+      <pre><code>
+swap->Present(1, 0);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- VERTEX BUFFER -->
+  <tr>
+    <td>Vertex Buffer</td>
+    <td>
+      Define vertices:
+      <pre><code>
+struct Vertex {
+    float x, y, z;
+};
+
+Vertex verts[] = {
+    { 0.0f,  0.5f, 0.0f },
+    { 0.5f, -0.5f, 0.0f },
+    { -0.5f, -0.5f, 0.0f }
+};
+      </code></pre>
+
+      Create buffer:
+      <pre><code>
+D3D11_BUFFER_DESC bd = {0};
+bd.Usage = D3D11_USAGE_DEFAULT;
+bd.ByteWidth = sizeof(verts);
+bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+D3D11_SUBRESOURCE_DATA sd = {0};
+sd.pSysMem = verts;
+
+ID3D11Buffer *vb;
+device->CreateBuffer(&bd, &sd, &vb);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- SHADERS -->
+  <tr>
+    <td>Vertex & Pixel Shaders</td>
+    <td>
+      Vertex shader (HLSL):
+      <pre><code>
+// vertex shader
+float4 main(float3 pos : POSITION) : SV_POSITION
+{
+    return float4(pos, 1.0f);
+}
+      </code></pre>
+
+      Pixel shader:
+      <pre><code>
+// pixel shader
+float4 main() : SV_TARGET
+{
+    return float4(1, 0, 0, 1); // red
+}
+      </code></pre>
+
+      Compile:
+      <pre><code>
+ID3DBlob *vsBlob, *psBlob;
+
+D3DCompile(vsCode, strlen(vsCode), NULL, NULL, NULL,
+           "main", "vs_4_0", 0, 0, &vsBlob, NULL);
+
+D3DCompile(psCode, strlen(psCode), NULL, NULL, NULL,
+           "main", "ps_4_0", 0, 0, &psBlob, NULL);
+      </code></pre>
+
+      Create shader objects:
+      <pre><code>
+ID3D11VertexShader *vs;
+ID3D11PixelShader *ps;
+
+device->CreateVertexShader(vsBlob->GetBufferPointer(),
+                           vsBlob->GetBufferSize(),
+                           NULL, &vs);
+
+device->CreatePixelShader(psBlob->GetBufferPointer(),
+                          psBlob->GetBufferSize(),
+                          NULL, &ps);
+
+context->VSSetShader(vs, NULL, 0);
+context->PSSetShader(ps, NULL, 0);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- INPUT LAYOUT -->
+  <tr>
+    <td>Input Layout</td>
+    <td>
+      <pre><code>
+D3D11_INPUT_ELEMENT_DESC layout[] = {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,
+      0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
+
+ID3D11InputLayout *il;
+device->CreateInputLayout(layout, 1,
+    vsBlob->GetBufferPointer(),
+    vsBlob->GetBufferSize(),
+    &il);
+
+context->IASetInputLayout(il);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- DRAW -->
+  <tr>
+    <td>Drawing the Triangle</td>
+    <td>
+      <pre><code>
+UINT stride = sizeof(Vertex);
+UINT offset = 0;
+
+context->IASetVertexBuffers(0, 1, &vb, &stride, &offset);
+context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TRIANGLELIST);
+
+context->Draw(3, 0);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- FULL PROGRAM -->
+  <tr>
+    <td>Full Direct3D Triangle Example</td>
+    <td>
+      <pre><code>
+#include &lt;windows.h&gt;
+#include &lt;d3d11.h&gt;
+#include &lt;d3dcompiler.h&gt;
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+
+// (Full initialization omitted for brevity in this chapter summary)
+// This is the standard Direct3D triangle pipeline.
+
+int WINAPI WinMain(HINSTANCE hInstance,
+                   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    // Create window, device, swap chain, shaders, buffers...
+    // Clear screen, draw triangle, present frame.
+
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 31 introduces **advanced Direct3D topics — constant buffers, matrices, textures, and full 3D rendering pipeline**.
+    </td>
+  </tr>
+
+</table>

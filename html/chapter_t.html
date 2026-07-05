@@ -1,0 +1,105 @@
+<!-- AVIS BLOCK
+FILE: chapter_t.html
+PURPOSE: Navigator‑MSVC Academy — Expansion Guide
+AUTHOR: Demon
+-->
+
+<h2>Chapter T — Expansion</h2>
+
+<table>
+<tr><th>Module</th><th>Routine</th></tr>
+
+<tr>
+<td>MySQL / MariaDB Integration</td>
+<td>
+<pre><code>
+Download MariaDB: https://mariadb.org/download/
+Install to: C:\MariaDB
+Configure my.ini:
+[mysqld]
+port=3306
+datadir=C:/MariaDB/data
+sql_mode=STRICT_TRANS_TABLES
+
+Test:
+mysql -u root -p
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>PHP Database Extension</td>
+<td>
+<pre><code>
+Edit php.ini:
+extension=mysqli
+extension=pdo_mysql
+
+Restart Apache
+Verify with: <?php $conn=new mysqli("localhost","root","pass"); echo "DB OK"; ?>
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>SSL Certificates</td>
+<td>
+<pre><code>
+Generate self-signed cert:
+openssl req -new -x509 -days 365 -nodes -out server.crt -keyout server.key
+
+Edit httpd-ssl.conf:
+SSLCertificateFile "C:/Apache24/conf/server.crt"
+SSLCertificateKeyFile "C:/Apache24/conf/server.key"
+
+Enable mod_ssl
+Restart Apache
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>FireGem Engine Hooks</td>
+<td>
+<pre><code>
+Create hooks directory: C:\Projects\Navigator-MSCV\hooks
+Example hook: build_hook.bat
+@echo off
+echo Running FireGem build hook...
+cl /O2 main.cpp -Fe:firegem.exe
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GitHub Actions Integration</td>
+<td>
+<pre><code>
+Create .github/workflows/build.yml:
+name: FireGem Build
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cl /O2 main.cpp -Fe:firegem.exe
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy expansion enables:
+- Database support
+- HTTPS security
+- FireGem build hooks
+- GitHub CI/CD pipelines
+</code></pre>
+</td>
+</tr>
+
+</table>

@@ -1,0 +1,87 @@
+<!-- AVIS BLOCK
+FILE: chapter_k.html
+PURPOSE: Navigator‑MSVC Academy — Environment Configuration
+AUTHOR: Demon
+-->
+
+<h2>Chapter K — Environment Configuration</h2>
+
+<table>
+<tr><th>Step</th><th>Routine</th></tr>
+
+<tr>
+<td>System PATH</td>
+<td>
+<pre><code>
+Add to PATH (CMD only):
+C:\Program Files\Notepad++
+C:\Apache24\bin
+C:\php
+C:\msys64\ucrt64\bin
+C:\Program Files\7-Zip
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Environment Variables</td>
+<td>
+<pre><code>
+Set persistent variables:
+- PHP_HOME = C:\php
+- APACHE_HOME = C:\Apache24
+- MSYS_HOME = C:\msys64
+- PATH updated accordingly
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>CMD Aliases</td>
+<td>
+<pre><code>
+Create batch aliases in C:\Tools\aliases.bat:
+doskey np="C:\Program Files\Notepad++\notepad++.exe" $*
+doskey apache="C:\Apache24\bin\httpd.exe" $*
+doskey php="C:\php\php.exe" $*
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Editor Defaults</td>
+<td>
+<pre><code>
+Configure Notepad++:
+- Default encoding UTF-8
+- Tab size = 4
+- Auto-completion enabled
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Apache + PHP Test</td>
+<td>
+<pre><code>
+Create C:\Apache24\htdocs\test.php
+Content:
+<?php echo "Navigator-MSCV OK"; ?>
+Run: http://localhost/test.php
+Output: Navigator-MSCV OK
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy requires unified environment variables
+for FireGem builds and DX pipeline fusion.
+CMD only — no PowerShell.
+</code></pre>
+</td>
+</tr>
+
+</table>

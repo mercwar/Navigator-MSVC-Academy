@@ -1,0 +1,223 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter08.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 8 (Functions)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 8 — Functions in C</h2>
+
+<table>
+  <tr>
+    <th>Concept</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>What is a function?</td>
+    <td>
+      A function is a reusable block of code that performs a specific task.  
+      Functions help organize programs, reduce repetition, and improve readability.
+      <br><br>
+      Every function has:
+      <ul>
+        <li>a <strong>return type</strong></li>
+        <li>a <strong>name</strong></li>
+        <li><strong>parameters</strong> (optional)</li>
+        <li>a <strong>body</strong></li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Basic function example</td>
+    <td>
+      <pre><code>
+int add(int a, int b) {
+    return a + b;
+}
+      </code></pre>
+      <ul>
+        <li><strong>int</strong> — return type</li>
+        <li><strong>add</strong> — function name</li>
+        <li><strong>(int a, int b)</strong> — parameters</li>
+        <li><strong>return a + b;</strong> — returned value</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Calling a function</td>
+    <td>
+      <pre><code>
+int result = add(3, 4);
+printf("%d\\n", result);
+      </code></pre>
+      The function executes and returns a value.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Functions with no parameters</td>
+    <td>
+      <pre><code>
+void greet(void) {
+    printf("Hello!\\n");
+}
+      </code></pre>
+      <strong>void</strong> means no return value.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Functions returning void</td>
+    <td>
+      <pre><code>
+void printLine(void) {
+    printf("----------------\\n");
+}
+      </code></pre>
+      Used for actions rather than calculations.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Functions with multiple parameters</td>
+    <td>
+      <pre><code>
+void showInfo(char name[], int age) {
+    printf("%s is %d years old\\n", name, age);
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Function prototypes</td>
+    <td>
+      A prototype tells the compiler a function exists before it is used.
+      <pre><code>
+int add(int a, int b);  // prototype
+
+int main(void) {
+    printf("%d\\n", add(5, 7));
+}
+      </code></pre>
+      Prototypes are usually placed at the top of the file or in header files.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Header files</td>
+    <td>
+      Functions can be declared in <strong>.h</strong> files:
+      <pre><code>
+// mathutils.h
+int add(int a, int b);
+      </code></pre>
+      And implemented in <strong>.c</strong> files:
+      <pre><code>
+// mathutils.c
+int add(int a, int b) {
+    return a + b;
+}
+      </code></pre>
+      This is the foundation of modular C programming.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Static functions</td>
+    <td>
+      <pre><code>
+static int internalCalc(int x) {
+    return x * 2;
+}
+      </code></pre>
+      <strong>static</strong> limits visibility to the current file.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Recursion</td>
+    <td>
+      A function calling itself:
+      <pre><code>
+int factorial(int n) {
+    if (n == 0) return 1;
+    return n * factorial(n - 1);
+}
+      </code></pre>
+      Powerful but must be used carefully.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Inline functions (C99)</td>
+    <td>
+      <pre><code>
+inline int square(int x) {
+    return x * x;
+}
+      </code></pre>
+      Suggests the compiler replace the call with the function body for speed.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Passing by value</td>
+    <td>
+      C always passes arguments by value:
+      <pre><code>
+void change(int x) {
+    x = 100;
+}
+      </code></pre>
+      The original variable is not modified.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Passing by reference (using pointers)</td>
+    <td>
+      <pre><code>
+void change(int *x) {
+    *x = 100;
+}
+      </code></pre>
+      Now the original variable <strong>is</strong> modified.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example: Full function program</td>
+    <td>
+      <pre><code>
+#include &lt;stdio.h&gt;
+
+int add(int a, int b) {
+    return a + b;
+}
+
+void show(int value) {
+    printf("Value: %d\\n", value);
+}
+
+int main(void) {
+    int result = add(10, 20);
+    show(result);
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 9 introduces arrays — sequential collections of data stored in memory.
+    </td>
+  </tr>
+
+</table>

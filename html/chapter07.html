@@ -1,0 +1,167 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter07.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 7 (Loops)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 7 — Loops in C</h2>
+
+<table>
+  <tr>
+    <th>Concept</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>What are loops?</td>
+    <td>
+      Loops allow your program to repeat actions automatically.  
+      C provides three main loop types:
+      <ul>
+        <li><strong>for</strong> — counted loops</li>
+        <li><strong>while</strong> — condition-based loops</li>
+        <li><strong>do-while</strong> — guaranteed one execution</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>for loop</td>
+    <td>
+      <pre><code>
+for (int i = 0; i &lt; 5; i++) {
+    printf("i = %d\\n", i);
+}
+      </code></pre>
+      <ul>
+        <li><strong>i = 0</strong> — initialization</li>
+        <li><strong>i &lt; 5</strong> — condition</li>
+        <li><strong>i++</strong> — increment</li>
+      </ul>
+      Runs 5 times (0–4).
+    </td>
+  </tr>
+
+  <tr>
+    <td>while loop</td>
+    <td>
+      <pre><code>
+int count = 0;
+
+while (count &lt; 3) {
+    printf("count = %d\\n", count);
+    count++;
+}
+      </code></pre>
+      Repeats while the condition is true.
+    </td>
+  </tr>
+
+  <tr>
+    <td>do-while loop</td>
+    <td>
+      <pre><code>
+int x = 0;
+
+do {
+    printf("x = %d\\n", x);
+    x++;
+} while (x &lt; 3);
+      </code></pre>
+      <strong>Always runs at least once</strong>.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Infinite loops</td>
+    <td>
+      <pre><code>
+while (1) {
+    printf("Running forever\\n");
+}
+      </code></pre>
+      Use carefully — often used in embedded systems and game loops.
+    </td>
+  </tr>
+
+  <tr>
+    <td>break statement</td>
+    <td>
+      <pre><code>
+for (int i = 0; i &lt; 10; i++) {
+    if (i == 5) break;
+}
+      </code></pre>
+      <strong>break</strong> exits the loop immediately.
+    </td>
+  </tr>
+
+  <tr>
+    <td>continue statement</td>
+    <td>
+      <pre><code>
+for (int i = 0; i &lt; 10; i++) {
+    if (i % 2 == 0) continue;
+    printf("%d\\n", i);
+}
+      </code></pre>
+      <strong>continue</strong> skips the current iteration.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Nested loops</td>
+    <td>
+      <pre><code>
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        printf("%d, %d\\n", i, j);
+    }
+}
+      </code></pre>
+      Useful for grids, matrices, and multi-dimensional data.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Loop pitfalls</td>
+    <td>
+      <ul>
+        <li>Forgetting to update the loop variable</li>
+        <li>Infinite loops caused by bad conditions</li>
+        <li>Off-by-one errors</li>
+        <li>Using <strong>==</strong> instead of <strong>&lt;</strong> or <strong>&gt;</strong></li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Example: Full loop program</td>
+    <td>
+      <pre><code>
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    for (int i = 1; i &lt;= 10; i++) {
+        if (i % 2 == 0) {
+            printf("%d is even\\n", i);
+        } else {
+            printf("%d is odd\\n", i);
+        }
+    }
+    return 0;
+}
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 8 introduces functions — reusable blocks of logic that make your programs modular.
+    </td>
+  </tr>
+
+</table>

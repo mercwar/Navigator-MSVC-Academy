@@ -1,0 +1,58 @@
+<!-- AVIS BLOCK
+FILE: chapterK.html
+PURPOSE: AVIS Multi‑Vector Fusion Layer (CBORD + MERC‑G)
+AUTHOR: Demon
+-->
+
+<h2>Chapter K — AVIS Multi‑Vector Fusion Layer (CBORD + MERC‑G)</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Fusion Concept</td>
+<td>
+AVIS fuses subsystem vectors into a single DX spine:
+<pre><code>
+struct AVIS_FUSION {
+    DXVector *dx;
+    CBORD    *cbord;
+    MERCG    *mercg;
+};
+</code></pre>
+This fusion ensures DirectX calls always route through validated subsystems.
+</td>
+</tr>
+
+<tr>
+<td>DX Ownership</td>
+<td>
+CBORD owns creation.  
+MERC‑G owns usage.  
+AVIS owns routing.
+</td>
+</tr>
+
+<tr>
+<td>Fusion Registration</td>
+<td>
+<pre><code>
+avis.fusion.dx    = &cbord.dx;
+avis.fusion.cbord = &cbord;
+avis.fusion.mercg = &mercg;
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Safety Gate</td>
+<td>
+AVIS checks DX health before allowing MERC‑G to draw:
+<pre><code>
+if (!avis.cyhy->dxHealth.deviceLost)
+    MERCG_Dispatch(dx,cmd);
+</code></pre>
+</td>
+</tr>
+
+</table>

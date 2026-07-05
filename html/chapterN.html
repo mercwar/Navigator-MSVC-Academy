@@ -1,0 +1,54 @@
+<!-- AVIS BLOCK
+FILE: chapterN.html
+PURPOSE: CYHY Telemetry → DirectX Stability Vector
+AUTHOR: Demon
+-->
+
+<h2>Chapter N — CYHY Telemetry → DirectX Stability Vector</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Telemetry Capture</td>
+<td>
+CYHY samples DX stability:
+<pre><code>
+CYHY_Telemetry t;
+t.fps = MERCG_GetFPS();
+t.presentLatency = MERCG_GetPresentLatency();
+t.deviceLost = MERCG_TestDevice(dx);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>AVIS Stability Flags</td>
+<td>
+<pre><code>
+if (t.deviceLost)
+    avis.flags |= AVIS_FLAG_DX_REBUILD;
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Rebuild Trigger</td>
+<td>
+<pre><code>
+if (avis.flags & AVIS_FLAG_DX_REBUILD)
+    CBORD_RebuildDX();
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Telemetry Vector</td>
+<td>
+<pre><code>
+avis.cyhy->telemetry = t;
+</code></pre>
+</td>
+</tr>
+
+</table>

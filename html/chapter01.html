@@ -1,0 +1,129 @@
+
+<!-- 
+AVIS BLOCK
+FILE: chapter01.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 1 (Introduction to C)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 1 — Introduction to C</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <tr>
+    <td>What is C?</td>
+    <td>
+      C is a general-purpose, compiled programming language used for operating systems,
+      embedded systems, game engines, compilers, firmware, and high-performance applications.
+      It provides low-level memory control while remaining readable and structured.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Why C matters</td>
+    <td>
+      C is the foundation of modern computing. Most languages (C++, Rust, Go, Python interpreters)
+      are built on top of C. Understanding C gives you direct insight into how software interacts
+      with hardware and operating systems.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Compilation model</td>
+    <td>
+      C is a compiled language. Source code (<code>.c</code>) is transformed into machine code
+      (<code>.exe</code>, <code>.out</code>) by a compiler such as GCC or MSVC.
+      This produces fast, efficient binaries.
+    </td>
+  </tr>
+
+  <tr>
+    <td>Basic structure of a C program</td>
+    <td>
+      <pre><code>
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("Hello, C world!\\n");
+    return 0;
+}
+      </code></pre>
+      <ul>
+        <li><strong>#include &lt;stdio.h&gt;</strong> — imports standard I/O functions.</li>
+        <li><strong>int main(void)</strong> — program entry point.</li>
+        <li><strong>printf()</strong> — prints text to the console.</li>
+        <li><strong>return 0;</strong> — signals successful execution.</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Key features of C</td>
+    <td>
+      <ul>
+        <li>Manual memory control (<code>malloc</code>, <code>free</code>)</li>
+        <li>Low-level pointer access</li>
+        <li>Fast execution</li>
+        <li>Portable across platforms</li>
+        <li>Small runtime footprint</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Common uses</td>
+    <td>
+      <ul>
+        <li>Operating systems (Windows, Linux kernel)</li>
+        <li>Embedded systems (microcontrollers, IoT)</li>
+        <li>Game engines (idTech, early Unreal)</li>
+        <li>Compilers and interpreters</li>
+        <li>High-performance libraries</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Development tools</td>
+    <td>
+      <ul>
+        <li>GCC (Linux/macOS)</li>
+        <li>Clang (cross-platform)</li>
+        <li>MSVC (Windows)</li>
+        <li>Make / CMake for build automation</li>
+        <li>VSCode / Visual Studio / Vim / Emacs</li>
+      </ul>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Compiling your first program</td>
+    <td>
+      <strong>Linux/macOS (GCC)</strong>
+      <pre><code>
+gcc main.c -o main
+./main
+      </code></pre>
+
+      <strong>Windows (MSVC)</strong>
+      <pre><code>
+cl main.c
+main.exe
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Continue to Chapter 2 to learn how to write, compile, and run your first full C program,
+      including deeper exploration of <code>main()</code>, headers, and console output.
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,84 @@
+<!-- AVIS BLOCK
+FILE: chapter_q.html
+PURPOSE: Navigator‑MSVC Academy — Automation Guide
+AUTHOR: Demon
+-->
+
+<h2>Chapter Q — Automation</h2>
+
+<table>
+<tr><th>Area</th><th>Routine</th></tr>
+
+<tr>
+<td>Build Automation</td>
+<td>
+<pre><code>
+File: BUILD.bat
+@echo off
+set SRC=C:\Projects\Navigator-MSCV
+set OUT=C:\Projects\build
+cl /O2 /Fe:%OUT%\app.exe %SRC%\main.cpp
+echo Build complete: %OUT%\app.exe
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Deployment Automation</td>
+<td>
+<pre><code>
+File: DEPLOY.bat
+@echo off
+set LOCAL=C:\Projects\Navigator-MSCV
+set REMOTE=/var/www/html
+"C:\Program Files\WinSCP\WinSCP.com" ^
+  /command "open sftp://user:pass@academy-server/" ^
+  "synchronize remote %LOCAL% %REMOTE%" ^
+  "exit"
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Packaging Automation</td>
+<td>
+<pre><code>
+File: PACKAGE.bat
+@echo off
+set SRC=C:\Projects\Navigator-MSCV
+set OUT=C:\Projects\release.zip
+"C:\Program Files\7-Zip\7z.exe" a -tzip "%OUT%" "%SRC%\*"
+echo Package created: %OUT%
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>GitHub Automation</td>
+<td>
+<pre><code>
+File: PUSH.bat
+@echo off
+cd C:\Projects\Navigator-MSCV
+git add .
+git commit -m "Automated commit"
+git push origin main
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy automation ensures:
+- Builds compiled with one command
+- Deployments synchronized via WinSCP
+- Packages zipped automatically
+- GitHub commits streamlined
+CMD only — no PowerShell
+</code></pre>
+</td>
+</tr>
+
+</table>

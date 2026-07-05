@@ -1,0 +1,325 @@
+<!-- 
+AVIS BLOCK
+FILE: chapter40.html
+PURPOSE: MercWar Standard C & WinAPI Tutorial - Chapter 40 (Asset Pipeline)
+AUTHOR: Demon
+NOTES: Loaded dynamically via AJAX from index.html
+-->
+
+<h2>Chapter 40 — Asset Pipeline: Importing, Converting, Compressing & Optimizing</h2>
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Description</th>
+  </tr>
+
+  <!-- INTRO -->
+  <tr>
+    <td>Asset Pipeline Overview</td>
+    <td>
+      A modern game engine uses a **content pipeline** to process raw assets into optimized runtime formats.
+
+      Pipeline stages:
+      <ul>
+        <li>Import</li>
+        <li>Convert</li>
+        <li>Optimize</li>
+        <li>Compress</li>
+        <li>Package</li>
+        <li>Load at runtime</li>
+      </ul>
+
+      Raw assets → processed assets → runtime assets.
+    </td>
+  </tr>
+
+  <!-- IMPORTERS -->
+  <tr>
+    <td>Importers</td>
+    <td>
+      Importers read external formats:
+      <ul>
+        <li>FBX</li>
+        <li>OBJ</li>
+        <li>GLTF</li>
+        <li>PNG/JPG/TGA</li>
+        <li>WAV/OGG</li>
+      </ul>
+
+      Example importer interface:
+      <pre><code>
+struct ImportResult {
+    Mesh mesh;
+    Material material;
+    Animation anim;
+};
+
+class Importer {
+public:
+    virtual ImportResult Import(const char *path) = 0;
+};
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MESH CONVERSION -->
+  <tr>
+    <td>Mesh Conversion</td>
+    <td>
+      Convert imported mesh into engine format:
+
+      <pre><code>
+struct Vertex {
+    XMFLOAT3 pos;
+    XMFLOAT3 normal;
+    XMFLOAT2 uv;
+    XMFLOAT4 tangent;
+};
+
+struct Mesh {
+    vector<Vertex> verts;
+    vector<uint32_t> indices;
+};
+      </code></pre>
+
+      Generate tangents:
+      <pre><code>
+ComputeTangents(mesh.verts, mesh.indices);
+      </code></pre>
+
+      Normalize normals:
+      <pre><code>
+NormalizeNormals(mesh.verts);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- MESH OPTIMIZATION -->
+  <tr>
+    <td>Mesh Optimization</td>
+    <td>
+      Optimize for GPU vertex cache:
+
+      <pre><code>
+OptimizeVertexCache(mesh.indices);
+OptimizeOverdraw(mesh.indices, mesh.verts);
+OptimizeVertexFetch(mesh.indices, mesh.verts);
+      </code></pre>
+
+      Tools like **meshoptimizer** perform:
+      <ul>
+        <li>Vertex cache optimization</li>
+        <li>Overdraw reduction</li>
+        <li>Vertex fetch optimization</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- TEXTURE PROCESSING -->
+  <tr>
+    <td>Texture Processing</td>
+    <td>
+      Convert textures to GPU formats:
+      <ul>
+        <li>BC1 (DXT1)</li>
+        <li>BC3 (DXT5)</li>
+        <li>BC7 (high quality)</li>
+        <li>BC5 (normal maps)</li>
+      </ul>
+
+      Example:
+      <pre><code>
+CompressBC7("albedo.png", "albedo.bc7");
+CompressBC5("normal.png", "normal.bc5");
+      </code></pre>
+
+      Generate mipmaps:
+      <pre><code>
+GenerateMipmaps(texture);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- NORMAL MAPS -->
+  <tr>
+    <td>Normal Map Conversion</td>
+    <td>
+      Convert RGB normal map → BC5 two‑channel:
+
+      <pre><code>
+for each pixel:
+    bc5.r = normal.x * 0.5 + 0.5;
+    bc5.g = normal.y * 0.5 + 0.5;
+      </code></pre>
+
+      Z reconstructed in shader:
+      <pre><code>
+float z = sqrt(1 - x*x - y*y);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- ANIMATION BAKING -->
+  <tr>
+    <td>Animation Baking</td>
+    <td>
+      Bake skeletal animation into engine format:
+
+      <pre><code>
+struct Keyframe {
+    float time;
+    XMFLOAT3 pos;
+    XMFLOAT4 rot;
+    XMFLOAT3 scale;
+};
+
+struct Animation {
+    vector<vector<Keyframe>> bones;
+};
+      </code></pre>
+
+      Compress keyframes:
+      <pre><code>
+QuantizeRotations(anim);
+RemoveRedundantKeys(anim);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- SKELETON -->
+  <tr>
+    <td>Skeleton Processing</td>
+    <td>
+      Skeleton structure:
+      <pre><code>
+struct Bone {
+    int parent;
+    XMMATRIX bindPose;
+};
+      </code></pre>
+
+      Precompute inverse bind pose:
+      <pre><code>
+bone.invBind = XMMatrixInverse(nullptr, bone.bindPose);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- AUDIO PROCESSING -->
+  <tr>
+    <td>Audio Processing</td>
+    <td>
+      Convert WAV → OGG:
+      <pre><code>
+ConvertToOgg("sound.wav", "sound.ogg");
+      </code></pre>
+
+      Generate streaming chunks:
+      <pre><code>
+SplitAudioIntoChunks("music.ogg");
+      </code></pre>
+
+      Precompute FFT for visualization:
+      <pre><code>
+ComputeFFT(audioData);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- PACKAGING -->
+  <tr>
+    <td>Asset Packaging</td>
+    <td>
+      Package assets into bundles:
+
+      <pre><code>
+struct Bundle {
+    vector<AssetHeader> headers;
+    vector<uint8_t> data;
+};
+      </code></pre>
+
+      Add asset:
+      <pre><code>
+AddToBundle(bundle, "mesh", meshData);
+AddToBundle(bundle, "texture", texData);
+      </code></pre>
+
+      Compress bundle:
+      <pre><code>
+CompressLZ4(bundle.data);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- RUNTIME LOADING -->
+  <tr>
+    <td>Runtime Loading</td>
+    <td>
+      Load bundle:
+      <pre><code>
+Bundle b = LoadBundle("level.bundle");
+      </code></pre>
+
+      Lookup asset:
+      <pre><code>
+AssetHeader *h = FindAsset(b, "player.mesh");
+Mesh m = LoadMesh(b.data + h->offset);
+      </code></pre>
+    </td>
+  </tr>
+
+  <!-- HOT RELOAD -->
+  <tr>
+    <td>Hot Reload</td>
+    <td>
+      Watch asset directory:
+      <pre><code>
+if (FileChanged(path))
+    ReloadAsset(path);
+      </code></pre>
+
+      Allows editing assets while game runs.
+    </td>
+  </tr>
+
+  <!-- FULL PIPELINE -->
+  <tr>
+    <td>Full Asset Pipeline Summary</td>
+    <td>
+      <pre><code>
+// 1. Import raw assets
+ImportFBX();
+ImportTextures();
+ImportAudio();
+
+// 2. Convert to engine formats
+ConvertMeshes();
+ConvertTextures();
+ConvertAnimations();
+
+// 3. Optimize
+OptimizeMeshes();
+CompressTextures();
+BakeAnimations();
+
+// 4. Package
+BuildBundles();
+
+// 5. Runtime
+LoadBundles();
+StreamAssets();
+HotReload();
+      </code></pre>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Next steps</td>
+    <td>
+      Chapter 41 introduces **tooling — editors, inspectors, scene editors, UI editors, and full engine toolchains**.
+    </td>
+  </tr>
+
+</table>

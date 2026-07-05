@@ -1,0 +1,61 @@
+<!-- AVIS BLOCK
+FILE: chapterU.html
+PURPOSE: AVIS Vector Scheduler — DX Command Timing & Frame Arbitration
+AUTHOR: Demon
+-->
+
+<h2>Chapter U — AVIS Vector Scheduler: DX Command Timing & Frame Arbitration</h2>
+
+<table>
+<tr><th>Topic</th><th>Description</th></tr>
+
+<tr>
+<td>Scheduler Concept</td>
+<td>
+AVIS schedules DX access across subsystems:
+<pre><code>
+struct AVIS_SCHED {
+    uint64_t frameID;
+    uint64_t tick;
+    AVIS_OWNER owner;
+};
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Frame Arbitration</td>
+<td>
+<pre><code>
+AVIS_OWNER AVIS_ChooseOwner()
+{
+    if (avis.cyhy->dxHealth.deviceLost)
+        return OWNER_CBORD;
+
+    return OWNER_MERCG;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>DX Access Window</td>
+<td>
+<pre><code>
+if (avis.sched.owner == OWNER_MERCG)
+    MERCG_RenderFrame(dx);
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Tick Advancement</td>
+<td>
+<pre><code>
+avis.sched.tick++;
+avis.sched.frameID++;
+</code></pre>
+</td>
+</tr>
+
+</table>

@@ -1,0 +1,115 @@
+<!-- AVIS BLOCK
+FILE: chapter_w.html
+PURPOSE: Navigator‑MSVC Academy — Navigator Control Panel
+AUTHOR: Demon
+-->
+
+<h2>Chapter W — Navigator Control</h2>
+
+<table>
+<tr><th>Area</th><th>Routine</th></tr>
+
+<tr>
+<td>Control Panel Layout</td>
+<td>
+<pre><code>
+HTML structure:
+<div id="navigator-control">
+  <ul class="menu">
+    <li><a href="chapter_j.html">Index</a></li>
+    <li><a href="chapter_u.html">Workflow</a></li>
+    <li><a href="chapter_v.html">LLM Integration</a></li>
+    <li><a href="chapter_s.html">Maintenance</a></li>
+  </ul>
+</div>
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>CSS Themes</td>
+<td>
+<pre><code>
+Theme: Gold
+#navigator-control { background-color: #FFD700; color: #000; }
+
+Theme: Ice Blue
+#navigator-control { background-color: #87CEEB; color: #000; }
+
+Theme: Fire Orange
+#navigator-control { background-color: #FF4500; color: #FFF; }
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Menu Styling</td>
+<td>
+<pre><code>
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.menu li {
+  margin-right: 20px;
+}
+.menu a {
+  text-decoration: none;
+  font-weight: bold;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Layout Stabilization</td>
+<td>
+<pre><code>
+CSS fix:
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+#navigator-control {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Dynamic AJAX Loading</td>
+<td>
+<pre><code>
+<script>
+function loadPage(page) {
+  fetch(page)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("content").innerHTML = data;
+    });
+}
+</script>
+</code></pre>
+</td>
+</tr>
+
+<tr>
+<td>Notes</td>
+<td>
+<pre><code>
+Navigator‑MSVC Academy control panel ensures:
+- Unified navigation
+- Themed UI (gold, ice blue, fire orange)
+- Stable layout
+- AJAX dynamic content loading
+</code></pre>
+</td>
+</tr>
+
+</table>
