@@ -227,37 +227,43 @@ hr, #content hr {
 #layoutTable td#contentCell {
   width: auto !important; /* Forces it to fill 100% of the remaining room */
 }
-/* --- Floating Scroll Pin Button --- */
-#scrollPinBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
-  background: rgba(8, 13, 20, 0.85) !important;
-  border: 1px solid #ffe066 !important; /* Premium Gold */
-  color: #ffe066 !important;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-family: "Rajdhani", sans-serif;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 224, 102, 0.3);
-  backdrop-filter: blur(4px);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
 
-#scrollPinBtn:hover {
-  border-color: #00e5ff !important; /* Ice Blue Hover */
-  color: #00e5ff !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 229, 255, 0.5);
-  transform: translateY(-2px);
-}
+
 
 /* Class injected by JavaScript to freeze the page viewport */
 .body-scroll-locked {
   overflow: hidden !important;
+}
+/* --- Floating Transparent Modern Scroll Pin Button --- */
+#scrollPinBtn {
+  position: fixed;          /* float in viewport */
+  bottom: 20px;             /* distance from bottom */
+  right: 20px;              /* distance from right */
+  background: transparent; /* transparent glass */
+  border: 1px solid #ffffff40;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  color: #b9e9ff;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 9999;            /* stay above content */
+}
+
+/* Hover glow */
+#scrollPinBtn:hover {
+  border-color: #4fd1ff;
+  box-shadow: 0 0 14px rgba(79, 209, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Active pinned state */
+#scrollPinBtn.pinned {
+  border-color: #ff6a00;
+  box-shadow: 0 0 16px rgba(255, 106, 0, 0.7);
+  color: #ffe066;
 }
