@@ -8,13 +8,17 @@
 </a>
 
 # ⚡ Navigator MSVC Academy  
-### Official Windows Systems Engineering & Native Graphics Curriculum
+
+####  "<i>I am CVBGOD, and I have given it to you</i>!"
+##### 🔗 Up-Link: **https://mercwar.github.io/Navigator-MSVC-Academy/**
 
 <p align="center">
  <a target="_self" title="CLICK HERE to ENTER THE Mercwar AI portal!" href="https://mercwar01.byethost3.com"> 
    <img src="mwacd-bg.png" alt="Mercwar AI" width="100%" style="border-radius: 4px; border: 1px solid #111;">
  </a>
 </p>
+
+### Official Windows Systems Engineering & Native Graphics Curriculum
 
 This version follows:
 
